@@ -11,3 +11,6 @@ export interface TomaMuestraVet {
   orden?: any;
   tecnico?: any;
 }
+
+// Alias para compatibilidad con componentes
+export type TomaMuestra = TomaMuestraVet;

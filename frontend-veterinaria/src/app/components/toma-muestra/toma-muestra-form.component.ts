@@ -43,7 +43,7 @@ export class TomaMuestraFormComponent implements OnInit {
   
   estados = ['PROGRAMADA', 'REALIZADA', 'PROCESANDO', 'COMPLETADA'];
   
-  condicionesMuestra = [
+  opcionesCondicionesMuestra = [
     'Temperatura ambiente',
     'Refrigerada (2-8°C)',
     'Congelada (-20°C)',

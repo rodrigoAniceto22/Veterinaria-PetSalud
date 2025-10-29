@@ -47,6 +47,11 @@ export class ResultadoService {
     return this.http.patch<ResultadoVeterinario>(`${this.apiUrl}/${id}/validar`, {});
   }
 
+  // Alias para compatibilidad con componentes
+  validar(id: number): Observable<ResultadoVeterinario> {
+    return this.validarResultado(id);
+  }
+
   marcarComoEntregado(id: number): Observable<ResultadoVeterinario> {
     return this.http.patch<ResultadoVeterinario>(`${this.apiUrl}/${id}/entregar`, {});
   }
@@ -55,6 +60,12 @@ export class ResultadoService {
     return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
   }
 
+  // Método que retorna Observable para uso en componentes
+  descargarPDF(id: number): Observable<Blob> {
+    return this.http.get(`${this.apiUrl}/${id}/pdf`, { responseType: 'blob' });
+  }
+
+  // Método helper para descarga directa
   descargarPdf(id: number): void {
     this.generarPdf(id).subscribe(blob => {
       const url = window.URL.createObjectURL(blob);

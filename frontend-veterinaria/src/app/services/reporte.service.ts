@@ -18,12 +18,48 @@ export class ReporteService {
     return this.http.get<any>(`${this.apiUrl}/dashboard`);
   }
 
-  reporteTiempoPromedio(inicio: string, fin: string): Observable<any> {
+  obtenerTiempoPromedio(inicio: string, fin: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/tiempo-promedio?inicio=${inicio}&fin=${fin}`);
   }
 
-  reporteAnalisisRepetidos(inicio: string, fin: string): Observable<any> {
+  obtenerAnalisisRepetidos(inicio: string, fin: string): Observable<any> {
     return this.http.get<any>(`${this.apiUrl}/analisis-repetidos?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerTratamientosMismoDia(fecha: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/tratamientos-mismo-dia?fecha=${fecha}`);
+  }
+
+  obtenerAnalisisPorTipo(inicio: string, fin: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/analisis-por-tipo?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerProductividadVeterinarios(inicio: string, fin: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/productividad-veterinarios?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerProductividadTecnicos(inicio: string, fin: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/productividad-tecnicos?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerIngresos(inicio: string, fin: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ingresos?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerEspeciesAtendidas(inicio: string, fin: string): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/especies-atendidas?inicio=${inicio}&fin=${fin}`);
+  }
+
+  obtenerOrdenesPorEstado(): Observable<any> {
+    return this.http.get<any>(`${this.apiUrl}/ordenes-estado`);
+  }
+
+  reporteTiempoPromedio(inicio: string, fin: string): Observable<any> {
+    return this.obtenerTiempoPromedio(inicio, fin);
+  }
+
+  reporteAnalisisRepetidos(inicio: string, fin: string): Observable<any> {
+    return this.obtenerAnalisisRepetidos(inicio, fin);
   }
 
   reporteSatisfaccionCliente(): Observable<any> {
@@ -31,30 +67,30 @@ export class ReporteService {
   }
 
   reporteTratamientosMismoDia(fecha: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/tratamientos-mismo-dia?fecha=${fecha}`);
+    return this.obtenerTratamientosMismoDia(fecha);
   }
 
   reporteAnalisisPorTipo(inicio: string, fin: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/analisis-por-tipo?inicio=${inicio}&fin=${fin}`);
+    return this.obtenerAnalisisPorTipo(inicio, fin);
   }
 
   reporteProductividadVeterinarios(inicio: string, fin: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/productividad-veterinarios?inicio=${inicio}&fin=${fin}`);
+    return this.obtenerProductividadVeterinarios(inicio, fin);
   }
 
   reporteProductividadTecnicos(inicio: string, fin: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/productividad-tecnicos?inicio=${inicio}&fin=${fin}`);
+    return this.obtenerProductividadTecnicos(inicio, fin);
   }
 
   reporteIngresos(inicio: string, fin: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/ingresos?inicio=${inicio}&fin=${fin}`);
+    return this.obtenerIngresos(inicio, fin);
   }
 
   reporteEspeciesAtendidas(inicio: string, fin: string): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/especies-atendidas?inicio=${inicio}&fin=${fin}`);
+    return this.obtenerEspeciesAtendidas(inicio, fin);
   }
 
   reporteOrdenesPorEstado(): Observable<any> {
-    return this.http.get<any>(`${this.apiUrl}/ordenes-estado`);
+    return this.obtenerOrdenesPorEstado();
   }
 }

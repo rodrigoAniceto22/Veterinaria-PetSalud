@@ -20,8 +20,8 @@ import { DuenoListComponent } from './components/dueno/dueno-list.component';
 import { DuenoFormComponent } from './components/dueno/dueno-form.component';
 
 // Mascota Components
-import MascotaListComponent from './components/mascota/mascota-list.component';
-import MascotaFormComponent from './components/mascota/mascota-form.component';
+import { MascotaListComponent } from './components/mascota/mascota-list.component';
+import { MascotaFormComponent } from './components/mascota/mascota-form.component';
 
 // Veterinario Components
 import { VeterinarioListComponent } from './components/veterinario/veterinario-list.component';
