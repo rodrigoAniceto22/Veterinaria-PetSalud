@@ -2,6 +2,8 @@ package com.petsalud.service;
 
 import com.itextpdf.text.*;
 import com.itextpdf.text.pdf.*;
+// AGREGADO: Import específico para LineSeparator
+import com.itextpdf.text.pdf.draw.LineSeparator;
 import com.petsalud.model.ResultadoVeterinario;
 import com.petsalud.model.OrdenVeterinaria;
 import com.petsalud.model.Mascota;
@@ -105,7 +107,7 @@ public class PdfService {
         headerTable.addCell(fechaCell);
         document.add(headerTable);
 
-        // Línea separadora
+        // Línea separadora - CORREGIDO
         LineSeparator linea = new LineSeparator();
         linea.setLineColor(BaseColor.BLUE);
         document.add(new Chunk(linea));

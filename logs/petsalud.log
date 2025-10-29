@@ -1,0 +1,444 @@
+2025-10-28 14:45:14 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Starting VeterinariaApplication using Java 21.0.8 with PID 29664 (C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud\backend-veterinaria\target\classes started by Rodrigo Aniceto in C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud)
+2025-10-28 14:45:14 [restartedMain] DEBUG com.petsalud.VeterinariaApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2025-10-28 14:45:14 [restartedMain] INFO  com.petsalud.VeterinariaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-28 14:45:14 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2025-10-28 14:45:14 [restartedMain] INFO  o.s.b.d.e.DevToolsPropertyDefaultsPostProcessor - For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2025-10-28 14:45:16 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-28 14:45:16 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 87 ms. Found 10 JPA repository interfaces.
+2025-10-28 14:45:17 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 14:45:17 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 14:45:17 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-10-28 14:45:18 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-10-28 14:45:18 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-10-28 14:45:18 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-10-28 14:45:18 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-10-28 14:45:18 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 3667 ms
+2025-10-28 14:45:18 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Starting...
+2025-10-28 14:45:18 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-1 - Added connection com.mysql.cj.jdbc.ConnectionImpl@38969d9d
+2025-10-28 14:45:18 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Start completed.
+2025-10-28 14:45:18 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3308/veterinaria_petsalud?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true'
+2025-10-28 14:45:19 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-28 14:45:19 [restartedMain] INFO  org.hibernate.Version - HHH000412: Hibernate ORM core version 6.4.1.Final
+2025-10-28 14:45:19 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-10-28 14:45:19 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-28 14:45:19 [restartedMain] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-10-28 14:45:19 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-28 14:45:20 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-28 14:45:20 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table detalle_facturas (
+        id_detalle bigint not null auto_increment,
+        cantidad integer not null,
+        descripcion varchar(200) not null,
+        precio_unitario float(53) not null,
+        subtotal float(53) not null,
+        tipo_servicio varchar(100),
+        id_factura bigint not null,
+        primary key (id_detalle)
+    ) engine=InnoDB
+2025-10-28 14:45:20 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table duenos (
+        id_dueno bigint not null auto_increment,
+        apellidos varchar(100) not null,
+        direccion varchar(200),
+        dni varchar(20) not null,
+        email varchar(100),
+        nombres varchar(100) not null,
+        telefono varchar(20) not null,
+        primary key (id_dueno)
+    ) engine=InnoDB
+2025-10-28 14:45:20 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table facturas (
+        id_factura bigint not null auto_increment,
+        estado varchar(50),
+        fecha_emision date not null,
+        fecha_pago date,
+        fecha_vencimiento date,
+        igv float(53),
+        metodo_pago varchar(50),
+        numero_factura varchar(50) not null,
+        observaciones TEXT,
+        subtotal float(53) not null,
+        total float(53) not null,
+        id_dueno bigint not null,
+        primary key (id_factura)
+    ) engine=InnoDB
+2025-10-28 14:45:20 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table mascotas (
+        id_mascota bigint not null auto_increment,
+        color varchar(50),
+        edad integer,
+        especie varchar(50) not null,
+        nombre varchar(100) not null,
+        observaciones TEXT,
+        peso float(53),
+        raza varchar(100),
+        sexo varchar(10),
+        id_dueno bigint not null,
+        primary key (id_mascota)
+    ) engine=InnoDB
+2025-10-28 14:45:20 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table ordenes_veterinarias (
+        id_orden bigint not null auto_increment,
+        diagnostico_presuntivo TEXT,
+        estado varchar(50),
+        fecha_orden date not null,
+        observaciones TEXT,
+        prioridad varchar(20),
+        sintomas TEXT,
+        tipo_examen varchar(100) not null,
+        id_mascota bigint not null,
+        id_veterinario bigint not null,
+        primary key (id_orden)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table resultados_veterinarios (
+        id_resultado bigint not null auto_increment,
+        conclusiones TEXT,
+        descripcion TEXT,
+        entregado bit,
+        fecha_entrega datetime(6),
+        fecha_resultado datetime(6) not null,
+        fecha_validacion datetime(6),
+        metodo_analisis varchar(200),
+        observaciones_tecnicas TEXT,
+        recomendaciones TEXT,
+        validado bit not null,
+        valores TEXT,
+        valores_referencia TEXT,
+        id_orden bigint not null,
+        primary key (id_resultado)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table tecnicos_veterinarios (
+        id_tecnico bigint not null auto_increment,
+        activo bit,
+        apellidos varchar(100) not null,
+        certificacion varchar(100),
+        email varchar(100),
+        especialidad varchar(100),
+        nombres varchar(100) not null,
+        telefono varchar(20),
+        primary key (id_tecnico)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table toma_muestras_vet (
+        id_toma bigint not null auto_increment,
+        codigo_muestra varchar(50),
+        condiciones_muestra varchar(200),
+        estado varchar(50),
+        fecha_hora datetime(6) not null,
+        metodo_obtencion varchar(100),
+        observaciones TEXT,
+        tipo_muestra varchar(100) not null,
+        volumen_muestra varchar(50),
+        id_orden bigint not null,
+        id_tecnico bigint not null,
+        primary key (id_toma)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table usuarios (
+        id_usuario bigint not null auto_increment,
+        activo bit,
+        apellidos varchar(100),
+        bloqueado bit,
+        contrasena varchar(255) not null,
+        email varchar(100),
+        fecha_creacion datetime(6),
+        intentos_fallidos integer,
+        nombre_usuario varchar(50) not null,
+        nombres varchar(100),
+        rol varchar(50) not null,
+        ultimo_acceso datetime(6),
+        primary key (id_usuario)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    create table veterinarios (
+        id_veterinario bigint not null auto_increment,
+        activo bit,
+        apellidos varchar(100) not null,
+        colegiatura varchar(50),
+        email varchar(100),
+        especialidad varchar(100),
+        nombres varchar(100) not null,
+        telefono varchar(20),
+        primary key (id_veterinario)
+    ) engine=InnoDB
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table duenos 
+       drop index UK_nnklf36qev6fc9o7xf1ydqqd5
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table duenos 
+       add constraint UK_nnklf36qev6fc9o7xf1ydqqd5 unique (dni)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table facturas 
+       drop index UK_m3ybkrgx2m3tj1tk6rp7sqjxt
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table facturas 
+       add constraint UK_m3ybkrgx2m3tj1tk6rp7sqjxt unique (numero_factura)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       drop index UK_4l309h4rc0pxq5ohq11spax9n
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       add constraint UK_4l309h4rc0pxq5ohq11spax9n unique (codigo_muestra)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       drop index UK_k1sy7q0165tug2v0akg3bqluk
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       add constraint UK_k1sy7q0165tug2v0akg3bqluk unique (id_orden)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       drop index UK_kfsp0s1tflm1cwlj8idhqsad0
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       add constraint UK_kfsp0s1tflm1cwlj8idhqsad0 unique (email)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       drop index UK_of5vabgukahdwmgxk4kjrbu98
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table usuarios 
+       add constraint UK_of5vabgukahdwmgxk4kjrbu98 unique (nombre_usuario)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table veterinarios 
+       drop index UK_sr5yk1fregoblao79xv38s94j
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table veterinarios 
+       add constraint UK_sr5yk1fregoblao79xv38s94j unique (colegiatura)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table detalle_facturas 
+       add constraint FKcjtvfqga3qbo3cye07e9dwl66 
+       foreign key (id_factura) 
+       references facturas (id_factura)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table facturas 
+       add constraint FKrbx4akwi8j1lotr4wxan6yfmb 
+       foreign key (id_dueno) 
+       references duenos (id_dueno)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table mascotas 
+       add constraint FKbk50u36otiymdvoeyjaxfxkk7 
+       foreign key (id_dueno) 
+       references duenos (id_dueno)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table ordenes_veterinarias 
+       add constraint FKmfocaxhmq6a57qi4njpc48vid 
+       foreign key (id_mascota) 
+       references mascotas (id_mascota)
+2025-10-28 14:45:21 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table ordenes_veterinarias 
+       add constraint FKix3vkrv238f9wjxkb8hbjpsf6 
+       foreign key (id_veterinario) 
+       references veterinarios (id_veterinario)
+2025-10-28 14:45:22 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table resultados_veterinarios 
+       add constraint FKkj1sbjgwbfklfskryfqgcorwf 
+       foreign key (id_orden) 
+       references ordenes_veterinarias (id_orden)
+2025-10-28 14:45:22 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       add constraint FKoboww4mh02yu9nb75thjq8x1m 
+       foreign key (id_orden) 
+       references ordenes_veterinarias (id_orden)
+2025-10-28 14:45:22 [restartedMain] DEBUG org.hibernate.SQL - 
+    alter table toma_muestras_vet 
+       add constraint FKtf23pjpb3nws0eftfm4amj54s 
+       foreign key (id_tecnico) 
+       references tecnicos_veterinarios (id_tecnico)
+2025-10-28 14:45:22 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 14:45:22 [restartedMain] INFO  o.s.d.j.r.query.QueryEnhancerFactory - Hibernate is in classpath; If applicable, HQL parser will be used.
+2025-10-28 14:45:24 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-28 14:45:25 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-10-28 14:45:25 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@21f5f9d6, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@26339049, org.springframework.security.web.context.SecurityContextHolderFilter@498cda58, org.springframework.security.web.header.HeaderWriterFilter@12b36804, org.springframework.web.filter.CorsFilter@24b1eb76, org.springframework.security.web.authentication.logout.LogoutFilter@4edec11b, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@17ee1f57, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@3e913955, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@1b4a112b, org.springframework.security.web.session.SessionManagementFilter@5b2b24f1, org.springframework.security.web.access.ExceptionTranslationFilter@7c90e44e, org.springframework.security.web.access.intercept.AuthorizationFilter@190e41ed]
+2025-10-28 14:45:26 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-10-28 14:45:26 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-10-28 14:45:26 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Started VeterinariaApplication in 12.502 seconds (process running for 13.597)
+2025-10-28 14:45:28 [RMI TCP Connection(2)-127.0.0.1] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring DispatcherServlet 'dispatcherServlet'
+2025-10-28 14:45:28 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Initializing Servlet 'dispatcherServlet'
+2025-10-28 14:45:28 [RMI TCP Connection(2)-127.0.0.1] INFO  o.s.web.servlet.DispatcherServlet - Completed initialization in 1 ms
+2025-10-28 14:47:14 [http-nio-8080-exec-1] INFO  o.a.tomcat.util.http.parser.Cookie - A cookie header was received [g_state={"i_l":0}] that contained an invalid cookie. That cookie will be ignored.
+ Note: further occurrences of this error will be logged at DEBUG level.
+2025-10-28 14:50:38 [http-nio-8080-exec-5] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        d1_0.id_dueno,
+        d1_0.apellidos,
+        d1_0.direccion,
+        d1_0.dni,
+        d1_0.email,
+        d1_0.nombres,
+        d1_0.telefono 
+    from
+        duenos d1_0
+2025-10-28 14:51:02 [http-nio-8080-exec-7] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        u1_0.id_usuario,
+        u1_0.activo,
+        u1_0.apellidos,
+        u1_0.bloqueado,
+        u1_0.contrasena,
+        u1_0.email,
+        u1_0.fecha_creacion,
+        u1_0.intentos_fallidos,
+        u1_0.nombre_usuario,
+        u1_0.nombres,
+        u1_0.rol,
+        u1_0.ultimo_acceso 
+    from
+        usuarios u1_0
+2025-10-28 14:57:28 [http-nio-8080-exec-9] DEBUG org.hibernate.SQL - 
+    /* <criteria> */ select
+        m1_0.id_mascota,
+        m1_0.color,
+        m1_0.id_dueno,
+        m1_0.edad,
+        m1_0.especie,
+        m1_0.nombre,
+        m1_0.observaciones,
+        m1_0.peso,
+        m1_0.raza,
+        m1_0.sexo 
+    from
+        mascotas m1_0
+2025-10-28 15:00:41 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-10-28 15:00:41 [Thread-5] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:00:41 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown initiated...
+2025-10-28 15:00:41 [Thread-5] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-1 - Shutdown completed.
+2025-10-28 15:00:41 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Starting VeterinariaApplication using Java 21.0.8 with PID 29664 (C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud\backend-veterinaria\target\classes started by Rodrigo Aniceto in C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud)
+2025-10-28 15:00:41 [restartedMain] DEBUG com.petsalud.VeterinariaApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2025-10-28 15:00:41 [restartedMain] INFO  com.petsalud.VeterinariaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 30 ms. Found 10 JPA repository interfaces.
+2025-10-28 15:00:41 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:00:41 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:00:41 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-10-28 15:00:41 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-10-28 15:00:41 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-10-28 15:00:41 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 473 ms
+2025-10-28 15:00:41 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Starting...
+2025-10-28 15:00:41 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-2 - Added connection com.mysql.cj.jdbc.ConnectionImpl@64dfd82f
+2025-10-28 15:00:41 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Start completed.
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3308/veterinaria_petsalud?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true'
+2025-10-28 15:00:41 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-28 15:00:41 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-10-28 15:00:41 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-28 15:00:41 [restartedMain] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-10-28 15:00:41 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-28 15:00:42 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-28 15:00:42 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:00:43 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-28 15:00:43 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-10-28 15:00:43 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@27f227eb, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@45053867, org.springframework.security.web.context.SecurityContextHolderFilter@74e2e620, org.springframework.security.web.header.HeaderWriterFilter@6e82cba9, org.springframework.web.filter.CorsFilter@3cac05a2, org.springframework.security.web.authentication.logout.LogoutFilter@5e27615, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@458e7459, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5aebbb57, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@393fc110, org.springframework.security.web.session.SessionManagementFilter@6b0927, org.springframework.security.web.access.ExceptionTranslationFilter@54b3cb4c, org.springframework.security.web.access.intercept.AuthorizationFilter@3cc49bcc]
+2025-10-28 15:00:43 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-10-28 15:00:43 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-10-28 15:00:43 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Started VeterinariaApplication in 2.556 seconds (process running for 931.088)
+2025-10-28 15:00:43 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-10-28 15:01:07 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-10-28 15:01:07 [Thread-7] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:01:07 [Thread-7] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown initiated...
+2025-10-28 15:01:07 [Thread-7] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-2 - Shutdown completed.
+2025-10-28 15:01:08 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Starting VeterinariaApplication using Java 21.0.8 with PID 29664 (C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud\backend-veterinaria\target\classes started by Rodrigo Aniceto in C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud)
+2025-10-28 15:01:08 [restartedMain] DEBUG com.petsalud.VeterinariaApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2025-10-28 15:01:08 [restartedMain] INFO  com.petsalud.VeterinariaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 26 ms. Found 10 JPA repository interfaces.
+2025-10-28 15:01:08 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:01:08 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:01:08 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-10-28 15:01:08 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-10-28 15:01:08 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-10-28 15:01:08 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 370 ms
+2025-10-28 15:01:08 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Starting...
+2025-10-28 15:01:08 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-3 - Added connection com.mysql.cj.jdbc.ConnectionImpl@644fdac4
+2025-10-28 15:01:08 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Start completed.
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3308/veterinaria_petsalud?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true'
+2025-10-28 15:01:08 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-28 15:01:08 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-28 15:01:08 [restartedMain] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-10-28 15:01:08 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-28 15:01:08 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-28 15:01:08 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:01:09 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-28 15:01:09 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-10-28 15:01:09 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@423dbfda, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@16ecde51, org.springframework.security.web.context.SecurityContextHolderFilter@58bbff7, org.springframework.security.web.header.HeaderWriterFilter@571f911b, org.springframework.web.filter.CorsFilter@3434ac5, org.springframework.security.web.authentication.logout.LogoutFilter@1157658e, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@2154e0ec, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@1757c63a, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@36dfe3ea, org.springframework.security.web.session.SessionManagementFilter@a904e56, org.springframework.security.web.access.ExceptionTranslationFilter@5394063f, org.springframework.security.web.access.intercept.AuthorizationFilter@1f9209f5]
+2025-10-28 15:01:09 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-10-28 15:01:09 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-10-28 15:01:09 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Started VeterinariaApplication in 1.659 seconds (process running for 956.877)
+2025-10-28 15:01:09 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-10-28 15:01:24 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-10-28 15:01:24 [Thread-11] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:01:24 [Thread-11] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown initiated...
+2025-10-28 15:01:24 [Thread-11] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-3 - Shutdown completed.
+2025-10-28 15:01:24 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Starting VeterinariaApplication using Java 21.0.8 with PID 29664 (C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud\backend-veterinaria\target\classes started by Rodrigo Aniceto in C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud)
+2025-10-28 15:01:24 [restartedMain] DEBUG com.petsalud.VeterinariaApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2025-10-28 15:01:24 [restartedMain] INFO  com.petsalud.VeterinariaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-28 15:01:24 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-28 15:01:24 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 32 ms. Found 10 JPA repository interfaces.
+2025-10-28 15:01:24 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:01:24 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:01:24 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-10-28 15:01:24 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-10-28 15:01:24 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-10-28 15:01:24 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-10-28 15:01:24 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-10-28 15:01:24 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 353 ms
+2025-10-28 15:01:24 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Starting...
+2025-10-28 15:01:24 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-4 - Added connection com.mysql.cj.jdbc.ConnectionImpl@34f436e4
+2025-10-28 15:01:24 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Start completed.
+2025-10-28 15:01:24 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3308/veterinaria_petsalud?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true'
+2025-10-28 15:01:25 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-28 15:01:25 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-10-28 15:01:25 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-28 15:01:25 [restartedMain] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-10-28 15:01:25 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-28 15:01:25 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-28 15:01:25 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:01:25 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-28 15:01:25 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-10-28 15:01:25 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@7a42592a, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@8d6ff61, org.springframework.security.web.context.SecurityContextHolderFilter@2ee0f498, org.springframework.security.web.header.HeaderWriterFilter@32cad15c, org.springframework.web.filter.CorsFilter@e67deb1, org.springframework.security.web.authentication.logout.LogoutFilter@16b5e98a, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@1291c25e, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@6aaace08, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@6b31a863, org.springframework.security.web.session.SessionManagementFilter@682b9ab4, org.springframework.security.web.access.ExceptionTranslationFilter@6d992ec, org.springframework.security.web.access.intercept.AuthorizationFilter@70beb9cb]
+2025-10-28 15:01:26 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-10-28 15:01:26 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-10-28 15:01:26 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Started VeterinariaApplication in 1.605 seconds (process running for 973.328)
+2025-10-28 15:01:26 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-10-28 15:10:17 [File Watcher] INFO  o.s.b.d.a.LocalDevToolsAutoConfiguration$RestartingClassPathChangeChangedEventListener - Restarting due to 1 class path change (0 additions, 0 deletions, 1 modification)
+2025-10-28 15:10:17 [Thread-15] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:10:17 [Thread-15] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown initiated...
+2025-10-28 15:10:17 [Thread-15] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-4 - Shutdown completed.
+2025-10-28 15:10:17 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Starting VeterinariaApplication using Java 21.0.8 with PID 29664 (C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud\backend-veterinaria\target\classes started by Rodrigo Aniceto in C:\Users\Rodrigo Aniceto\Pictures\Veterinaria-PetSalud)
+2025-10-28 15:10:17 [restartedMain] DEBUG com.petsalud.VeterinariaApplication - Running with Spring Boot v3.2.1, Spring v6.1.2
+2025-10-28 15:10:17 [restartedMain] INFO  com.petsalud.VeterinariaApplication - No active profile set, falling back to 1 default profile: "default"
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Bootstrapping Spring Data JPA repositories in DEFAULT mode.
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.d.r.c.RepositoryConfigurationDelegate - Finished Spring Data repository scanning in 35 ms. Found 10 JPA repository interfaces.
+2025-10-28 15:10:18 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:10:18 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - Code archive: C:\Users\Rodrigo Aniceto\.m2\repository\org\springframework\boot\spring-boot\3.2.1\spring-boot-3.2.1.jar
+2025-10-28 15:10:18 [restartedMain] DEBUG c.petsalud.VeterinariaApplication$2 - None of the document roots [src/main/webapp, public, static] point to a directory and will be ignored.
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat initialized with port 8080 (http)
+2025-10-28 15:10:18 [restartedMain] INFO  o.a.catalina.core.StandardService - Starting service [Tomcat]
+2025-10-28 15:10:18 [restartedMain] INFO  o.a.catalina.core.StandardEngine - Starting Servlet engine: [Apache Tomcat/10.1.17]
+2025-10-28 15:10:18 [restartedMain] INFO  o.a.c.c.C.[Tomcat].[localhost].[/] - Initializing Spring embedded WebApplicationContext
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.b.w.s.c.ServletWebServerApplicationContext - Root WebApplicationContext: initialization completed in 454 ms
+2025-10-28 15:10:18 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Starting...
+2025-10-28 15:10:18 [restartedMain] INFO  com.zaxxer.hikari.pool.HikariPool - HikariPool-5 - Added connection com.mysql.cj.jdbc.ConnectionImpl@1d69685b
+2025-10-28 15:10:18 [restartedMain] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Start completed.
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.b.a.h.H2ConsoleAutoConfiguration - H2 console available at '/h2-console'. Database available at 'jdbc:mysql://localhost:3308/veterinaria_petsalud?useSSL=false&serverTimezone=America/Lima&allowPublicKeyRetrieval=true&createDatabaseIfNotExist=true'
+2025-10-28 15:10:18 [restartedMain] INFO  o.h.jpa.internal.util.LogHelper - HHH000204: Processing PersistenceUnitInfo [name: default]
+2025-10-28 15:10:18 [restartedMain] INFO  o.h.c.i.RegionFactoryInitiator - HHH000026: Second-level cache disabled
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.o.j.p.SpringPersistenceUnitInfo - No LoadTimeWeaver setup: ignoring JPA class transformer
+2025-10-28 15:10:18 [restartedMain] WARN  org.hibernate.dialect.Dialect - HHH000511: The 5.5.0 version for [org.hibernate.dialect.MySQLDialect] is no longer supported, hence certain features may not work properly. The minimum supported version is 8.0.0. Check the community dialects project for available legacy versions.
+2025-10-28 15:10:18 [restartedMain] WARN  org.hibernate.orm.deprecation - HHH90000025: MySQLDialect does not need to be specified explicitly using 'hibernate.dialect' (remove the property setting and it will be selected by default)
+2025-10-28 15:10:18 [restartedMain] INFO  o.h.e.t.j.p.i.JtaPlatformInitiator - HHH000489: No JTA platform available (set 'hibernate.transaction.jta.platform' to enable JTA platform integration)
+2025-10-28 15:10:18 [restartedMain] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Initialized JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:10:18 [restartedMain] WARN  o.s.b.a.o.j.JpaBaseConfiguration$JpaWebConfiguration - spring.jpa.open-in-view is enabled by default. Therefore, database queries may be performed during view rendering. Explicitly configure spring.jpa.open-in-view to disable this warning
+2025-10-28 15:10:19 [restartedMain] INFO  o.s.b.a.e.web.EndpointLinksResolver - Exposing 3 endpoint(s) beneath base path '/actuator'
+2025-10-28 15:10:19 [restartedMain] INFO  o.s.s.web.DefaultSecurityFilterChain - Will secure any request with [org.springframework.security.web.session.DisableEncodeUrlFilter@5047fade, org.springframework.security.web.context.request.async.WebAsyncManagerIntegrationFilter@48ea2c60, org.springframework.security.web.context.SecurityContextHolderFilter@5f5730e0, org.springframework.security.web.header.HeaderWriterFilter@141be4fe, org.springframework.web.filter.CorsFilter@7cc8a3d2, org.springframework.security.web.authentication.logout.LogoutFilter@19539f6c, org.springframework.security.web.savedrequest.RequestCacheAwareFilter@30437af4, org.springframework.security.web.servletapi.SecurityContextHolderAwareRequestFilter@5a400a15, org.springframework.security.web.authentication.AnonymousAuthenticationFilter@95a379b, org.springframework.security.web.session.SessionManagementFilter@21c72610, org.springframework.security.web.access.ExceptionTranslationFilter@2762d8f1, org.springframework.security.web.access.intercept.AuthorizationFilter@4abc93bb]
+2025-10-28 15:10:19 [restartedMain] INFO  o.s.b.d.a.OptionalLiveReloadServer - LiveReload server is running on port 35729
+2025-10-28 15:10:19 [restartedMain] INFO  o.s.b.w.e.tomcat.TomcatWebServer - Tomcat started on port 8080 (http) with context path ''
+2025-10-28 15:10:19 [restartedMain] INFO  com.petsalud.VeterinariaApplication - Started VeterinariaApplication in 1.879 seconds (process running for 1506.858)
+2025-10-28 15:10:19 [restartedMain] INFO  o.s.b.d.a.ConditionEvaluationDeltaLoggingListener - Condition evaluation unchanged
+2025-10-28 15:11:31 [SpringApplicationShutdownHook] INFO  o.s.o.j.LocalContainerEntityManagerFactoryBean - Closing JPA EntityManagerFactory for persistence unit 'default'
+2025-10-28 15:11:31 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Shutdown initiated...
+2025-10-28 15:11:31 [SpringApplicationShutdownHook] INFO  com.zaxxer.hikari.HikariDataSource - HikariPool-5 - Shutdown completed.

@@ -140,7 +140,8 @@ public class UsuarioController {
         if (usuario == null) {
             response.put("success", false);
             response.put("message", "Usuario no encontrado");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            // CORREGIDO: usar constructor en lugar de .body()
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // Verificar contraseña
@@ -153,7 +154,8 @@ public class UsuarioController {
         } else {
             response.put("success", false);
             response.put("message", "Contraseña incorrecta");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            // CORREGIDO: usar constructor en lugar de .body()
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
     }
 
@@ -172,7 +174,8 @@ public class UsuarioController {
         if (usuario == null) {
             response.put("success", false);
             response.put("message", "Usuario no encontrado");
-            return ResponseEntity.notFound().body(response);
+            // CORREGIDO: usar constructor en lugar de .body()
+            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
         }
 
         String passwordActual = passwords.get("passwordActual");
@@ -182,7 +185,8 @@ public class UsuarioController {
         if (!passwordEncoder.matches(passwordActual, usuario.getContrasena())) {
             response.put("success", false);
             response.put("message", "Contraseña actual incorrecta");
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(response);
+            // CORREGIDO: usar constructor en lugar de .body()
+            return new ResponseEntity<>(response, HttpStatus.UNAUTHORIZED);
         }
 
         // Actualizar contraseña

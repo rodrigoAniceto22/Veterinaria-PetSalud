@@ -1,0 +1,102 @@
+
+// ===================================================
+// src/app/components/toma-muestra/toma-muestra-form.component.html
+// ===================================================
+/*
+<div class="container">
+  <div class="header">
+    <h2>🧪 Nueva Toma de Muestra</h2>
+    <button class="btn btn-secondary" (click)="volver()">← Volver</button>
+  </div>
+
+  <div class="card">
+    <form [formGroup]="tomaForm" (ngSubmit)="onSubmit()">
+      <div class="form-grid">
+        
+        <div class="form-group">
+          <label>Orden Veterinaria *</label>
+          <select formControlName="idOrden" class="form-control">
+            <option value="">Seleccione orden...</option>
+            <option *ngFor="let orden of ordenes" [value]="orden.idOrden">
+              Orden #{{ orden.idOrden }} - {{ orden.tipoExamen }} 
+              ({{ orden.mascota?.nombre }})
+            </option>
+          </select>
+          <div class="error" *ngIf="tomaForm.get('idOrden')?.invalid && tomaForm.get('idOrden')?.touched">
+            Orden es requerida
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Técnico *</label>
+          <select formControlName="idTecnico" class="form-control">
+            <option value="">Seleccione técnico...</option>
+            <option *ngFor="let tec of tecnicos" [value]="tec.idTecnico">
+              {{ tec.nombreCompleto || (tec.nombres + ' ' + tec.apellidos) }}
+            </option>
+          </select>
+          <div class="error" *ngIf="tomaForm.get('idTecnico')?.invalid && tomaForm.get('idTecnico')?.touched">
+            Técnico es requerido
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label>Tipo de Muestra *</label>
+          <select formControlName="tipoMuestra" class="form-control">
+            <option value="">Seleccione tipo...</option>
+            <option *ngFor="let tipo of tiposMuestra" [value]="tipo">
+              {{ tipo }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Fecha y Hora *</label>
+          <input type="datetime-local" formControlName="fechaHora" class="form-control">
+        </div>
+
+        <div class="form-group">
+          <label>Método de Obtención</label>
+          <input type="text" formControlName="metodoObtencion" class="form-control" 
+                 placeholder="ej: Venopunción yugular">
+        </div>
+
+        <div class="form-group">
+          <label>Volumen de Muestra</label>
+          <input type="text" formControlName="volumenMuestra" class="form-control" 
+                 placeholder="ej: 5 ml">
+        </div>
+
+        <div class="form-group">
+          <label>Condiciones de Muestra</label>
+          <input type="text" formControlName="condicionesMuestra" class="form-control" 
+                 placeholder="ej: Refrigerado, tubo con EDTA">
+        </div>
+
+        <div class="form-group">
+          <label>Estado</label>
+          <select formControlName="estado" class="form-control">
+            <option *ngFor="let estado of estados" [value]="estado">
+              {{ estado }}
+            </option>
+          </select>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Observaciones</label>
+          <textarea formControlName="observaciones" class="form-control" rows="3"
+                    placeholder="Observaciones adicionales..."></textarea>
+        </div>
+
+      </div>
+
+      <div class="form-actions">
+        <button type="submit" class="btn btn-primary" [disabled]="!tomaForm.valid || loading">
+          {{ loading ? '⏳ Registrando...' : '💾 Registrar Toma' }}
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="volver()">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+*/

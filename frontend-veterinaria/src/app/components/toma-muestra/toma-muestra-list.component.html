@@ -1,0 +1,94 @@
+
+// ===================================================
+// src/app/components/toma-muestra/toma-muestra-list.component.html
+// ===================================================
+/*
+<div class="container">
+  <div class="header">
+    <h2>🧪 Toma de Muestras</h2>
+    <button class="btn btn-primary" (click)="nueva()">➕ Nueva Toma</button>
+  </div>
+
+  <div class="alert alert-info" *ngIf="loading">
+    ⏳ Cargando tomas de muestra...
+  </div>
+
+  <div class="cards-grid" *ngIf="!loading && tomaMuestras.length > 0">
+    <div *ngFor="let toma of tomaMuestras" class="toma-card">
+      <div class="card-header">
+        <div class="codigo">{{ toma.codigoMuestra || 'Sin código' }}</div>
+        <span class="badge" [ngClass]="getEstadoClass(toma.estado)">
+          {{ toma.estado || 'PROGRAMADA' }}
+        </span>
+      </div>
+      
+      <div class="card-body">
+        <div class="info-row">
+          <strong>🔬 Tipo Muestra:</strong>
+          <span>{{ toma.tipoMuestra }}</span>
+        </div>
+        <div class="info-row">
+          <strong>📅 Fecha/Hora:</strong>
+          <span>{{ toma.fechaHora | date:'dd/MM/yyyy HH:mm' }}</span>
+        </div>
+        <div class="info-row" *ngIf="toma.metodoObtencion">
+          <strong>🧬 Método:</strong>
+          <span>{{ toma.metodoObtencion }}</span>
+        </div>
+        <div class="info-row" *ngIf="toma.volumenMuestra">
+          <strong>💧 Volumen:</strong>
+          <span>{{ toma.volumenMuestra }}</span>
+        </div>
+        <div class="info-row" *ngIf="toma.tecnico">
+          <strong>👨‍🔬 Técnico:</strong>
+          <span>{{ toma.tecnico.nombreCompleto || (toma.tecnico.nombres + ' ' + toma.tecnico.apellidos) }}</span>
+        </div>
+        <div class="info-row" *ngIf="toma.orden">
+          <strong>📋 Orden:</strong>
+          <span>#{{ toma.orden.idOrden }} - {{ toma.orden.tipoExamen }}</span>
+        </div>
+      </div>
+
+      <div class="card-actions">
+        <button (click)="eliminar(toma.idToma!)" class="btn btn-sm btn-danger">
+          🗑️ Eliminar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div class="alert alert-warning" *ngIf="!loading && tomaMuestras.length === 0">
+    📭 No hay tomas de muestra registradas. 
+    <button class="btn-link" (click)="nueva()">Crear la primera</button>
+  </div>
+</div>
+*/
+*/
+
+// ===================================================
+// src/app/components/toma-muestra/toma-muestra-list.component.css
+// ===================================================
+/*
+.container { padding: 2rem; }
+.header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
+.btn { padding: 0.5rem 1rem; border-radius: 5px; border: none; cursor: pointer; font-weight: 600; }
+.btn-primary { background: #667eea; color: white; }
+.btn-danger { background: #fc8181; color: white; }
+.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
+.btn-link { background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
+.toma-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
+.card-header { padding: 1rem; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; display: flex; justify-content: space-between; }
+.codigo { font-weight: bold; font-size: 1rem; }
+.badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem; background: rgba(255,255,255,0.3); }
+.badge-programada { background: #fef3c7; color: #92400e; }
+.badge-realizada { background: #dbeafe; color: #1e40af; }
+.badge-completada { background: #d1fae5; color: #065f46; }
+.card-body { padding: 1.5rem; }
+.info-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f1f1; }
+.info-row:last-child { border-bottom: none; }
+.card-actions { padding: 1rem; background: #f7fafc; display: flex; justify-content: flex-end; }
+.alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
+.alert-info { background: #bee3f8; color: #2c5282; }
+.alert-warning { background: #feebc8; color: #7c2d12; }
+*/
