@@ -1,0 +1,206 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-file-invoice-dollar me-2"></i>Gestión de Facturas</h2>
+      <p class="text-muted">Control de facturación y pagos</p>
+    </div>
+    <button class="btn btn-primary" (click)="nueva()">
+      <i class="fas fa-plus me-2"></i>Nueva Factura
+    </button>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="row g-3 mb-4">
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Total Facturado</p>
+              <h4 class="mb-0">S/. {{ totalFacturado | number:'1.2-2' }}</h4>
+            </div>
+            <div class="icon-box bg-primary">
+              <i class="fas fa-dollar-sign fa-2x text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Total Pagado</p>
+              <h4 class="mb-0 text-success">S/. {{ totalPagado | number:'1.2-2' }}</h4>
+            </div>
+            <div class="icon-box bg-success">
+              <i class="fas fa-check-circle fa-2x text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-4">
+      <div class="card border-0 shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <p class="text-muted mb-1">Total Pendiente</p>
+              <h4 class="mb-0 text-warning">S/. {{ totalPendiente | number:'1.2-2' }}</h4>
+            </div>
+            <div class="icon-box bg-warning">
+              <i class="fas fa-clock fa-2x text-white"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por número, cliente o DNI..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarBusqueda()" *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="btn-group w-100">
+            <button class="btn" [class.btn-primary]="filtroEstado === 'TODAS'" 
+                    [class.btn-outline-primary]="filtroEstado !== 'TODAS'"
+                    (click)="cambiarFiltroEstado('TODAS')">
+              Todas
+            </button>
+            <button class="btn" [class.btn-warning]="filtroEstado === 'PENDIENTE'" 
+                    [class.btn-outline-warning]="filtroEstado !== 'PENDIENTE'"
+                    (click)="cambiarFiltroEstado('PENDIENTE')">
+              Pendientes
+            </button>
+            <button class="btn" [class.btn-success]="filtroEstado === 'PAGADA'" 
+                    [class.btn-outline-success]="filtroEstado !== 'PAGADA'"
+                    (click)="cambiarFiltroEstado('PAGADA')">
+              Pagadas
+            </button>
+          </div>
+        </div>
+        <div class="col-md-3 text-end">
+          <button class="btn btn-outline-success" (click)="exportarExcel()">
+            <i class="fas fa-file-excel me-1"></i>Exportar
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3">Cargando facturas...</p>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <div *ngIf="facturasFiltradas.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron facturas</p>
+      </div>
+
+      <div *ngIf="facturasFiltradas.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>N° Factura</th>
+              <th>Cliente</th>
+              <th>Fecha Emisión</th>
+              <th>Subtotal</th>
+              <th>IGV</th>
+              <th>Total</th>
+              <th>Estado</th>
+              <th>Método Pago</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let factura of facturasPaginadas">
+              <td><strong>{{ factura.numeroFactura }}</strong></td>
+              <td>
+                <div *ngIf="factura.dueno">
+                  {{ factura.dueno.nombres }} {{ factura.dueno.apellidos }}
+                  <br><small class="text-muted">DNI: {{ factura.dueno.dni }}</small>
+                </div>
+              </td>
+              <td>{{ factura.fechaEmision | date:'dd/MM/yyyy' }}</td>
+              <td>S/. {{ factura.subtotal | number:'1.2-2' }}</td>
+              <td>S/. {{ factura.igv | number:'1.2-2' }}</td>
+              <td><strong>S/. {{ factura.total | number:'1.2-2' }}</strong></td>
+              <td>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(factura.estado!)">
+                  {{ factura.estado }}
+                </span>
+              </td>
+              <td>{{ factura.metodoPago || '-' }}</td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" (click)="ver(factura.idFactura!)" title="Ver">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-primary" (click)="imprimirFactura(factura.idFactura!)" title="Imprimir">
+                    <i class="fas fa-print"></i>
+                  </button>
+                  <button *ngIf="factura.estado === 'PENDIENTE'" 
+                          class="btn btn-outline-success" 
+                          (click)="marcarComoPagada(factura)" 
+                          title="Marcar como pagada">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" (click)="editar(factura.idFactura!)" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="eliminar(factura)" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <small class="text-muted">
+          Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+          {{ Math.min(paginaActual * itemsPorPagina, facturasFiltradas.length) }} 
+          de {{ facturasFiltradas.length }} registros
+        </small>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

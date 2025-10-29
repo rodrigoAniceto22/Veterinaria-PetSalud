@@ -1,5 +1,4 @@
-// src/app/models/toma-muestra.model.ts
-export interface TomaMuestra {
+export interface TomaMuestraVet {
   idToma?: number;
   fechaHora: string;
   tipoMuestra: string;
@@ -9,8 +8,6 @@ export interface TomaMuestra {
   observaciones?: string;
   estado?: string;
   codigoMuestra?: string;
-  orden?: Orden;
-  tecnico?: Tecnico;
-  idOrden?: number;
-  idTecnico?: number;
+  orden?: any;
+  tecnico?: any;
 }

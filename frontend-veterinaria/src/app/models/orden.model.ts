@@ -1,5 +1,4 @@
-// src/app/models/orden.model.ts
-export interface Orden {
+export interface OrdenVeterinaria {
   idOrden?: number;
   fechaOrden: string;
   tipoExamen: string;
@@ -8,8 +7,8 @@ export interface Orden {
   observaciones?: string;
   diagnosticoPresuntivo?: string;
   sintomas?: string;
-  mascota?: Mascota;
-  veterinario?: Veterinario;
-  idMascota?: number;
-  idVeterinario?: number;
+  mascota?: any;
+  veterinario?: any;
+  tomaMuestra?: any;
+  resultados?: any[];
 }

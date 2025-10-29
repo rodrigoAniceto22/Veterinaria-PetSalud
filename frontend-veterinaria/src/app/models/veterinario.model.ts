@@ -1,4 +1,3 @@
-// src/app/models/veterinario.model.ts
 export interface Veterinario {
   idVeterinario?: number;
   nombres: string;
@@ -8,4 +7,5 @@ export interface Veterinario {
   email?: string;
   colegiatura?: string;
   activo?: boolean;
+  ordenes?: any[];
 }

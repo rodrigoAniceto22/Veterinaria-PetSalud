@@ -1,44 +1,49 @@
-// ===================================================
-// src/app/services/veterinario.service.ts
-// ===================================================
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Veterinario } from '../models/veterinario.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class VeterinarioService {
-  private apiUrl = `${environment.apiUrl}/veterinarios`;
-  private headers = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
+  private apiUrl = 'http://localhost:8080/api/veterinarios';
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Veterinario[]> {
-    return this.http.get<Veterinario[]>(this.apiUrl, { headers: this.headers });
+  listarTodos(): Observable<Veterinario[]> {
+    return this.http.get<Veterinario[]>(this.apiUrl);
   }
 
-  getById(id: number): Observable<Veterinario> {
-    return this.http.get<Veterinario>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  obtenerPorId(id: number): Observable<Veterinario> {
+    return this.http.get<Veterinario>(`${this.apiUrl}/${id}`);
   }
 
-  getDisponibles(): Observable<Veterinario[]> {
-    return this.http.get<Veterinario[]>(`${this.apiUrl}/disponibles`, { headers: this.headers });
+  buscarPorEspecialidad(especialidad: string): Observable<Veterinario[]> {
+    return this.http.get<Veterinario[]>(`${this.apiUrl}/especialidad/${especialidad}`);
   }
 
-  create(veterinario: Veterinario): Observable<Veterinario> {
-    return this.http.post<Veterinario>(this.apiUrl, veterinario, { headers: this.headers });
+  buscarPorNombre(nombre: string): Observable<Veterinario[]> {
+    return this.http.get<Veterinario[]>(`${this.apiUrl}/buscar?nombre=${nombre}`);
   }
 
-  update(id: number, veterinario: Veterinario): Observable<Veterinario> {
-    return this.http.put<Veterinario>(`${this.apiUrl}/${id}`, veterinario, { headers: this.headers });
+  obtenerDisponibles(): Observable<Veterinario[]> {
+    return this.http.get<Veterinario[]>(`${this.apiUrl}/disponibles`);
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  crear(veterinario: Veterinario): Observable<Veterinario> {
+    return this.http.post<Veterinario>(this.apiUrl, veterinario);
+  }
+
+  actualizar(id: number, veterinario: Veterinario): Observable<Veterinario> {
+    return this.http.put<Veterinario>(`${this.apiUrl}/${id}`, veterinario);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  obtenerOrdenes(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/ordenes`);
   }
 }

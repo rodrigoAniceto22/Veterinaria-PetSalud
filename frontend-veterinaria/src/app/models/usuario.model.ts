@@ -1,14 +1,15 @@
-// ===================================================
-// src/app/models/usuario.model.ts
-// ===================================================
 export interface Usuario {
   idUsuario?: number;
-  nombreCompleto: string;
-  username: string;
+  nombreUsuario: string;
   contrasena?: string;
-  email: string;
   rol: string;
+  email?: string;
+  nombres?: string;
+  apellidos?: string;
   activo?: boolean;
   fechaCreacion?: string;
   ultimoAcceso?: string;
+  intentosFallidos?: number;
+  bloqueado?: boolean;
+  nombreCompleto?: string;
 }

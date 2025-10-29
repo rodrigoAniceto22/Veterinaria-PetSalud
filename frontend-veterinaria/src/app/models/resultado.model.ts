@@ -1,5 +1,4 @@
-// src/app/models/resultado.model.ts
-export interface Resultado {
+export interface ResultadoVeterinario {
   idResultado?: number;
   fechaResultado: string;
   descripcion?: string;
@@ -13,6 +12,5 @@ export interface Resultado {
   fechaEntrega?: string;
   metodoAnalisis?: string;
   observacionesTecnicas?: string;
-  orden?: Orden;
-  idOrden?: number;
+  orden?: any;
 }

@@ -1,0 +1,168 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-dog me-2"></i>Gestión de Mascotas</h2>
+      <p class="text-muted">Lista de animales registrados</p>
+      
+      <!-- Filtro por dueño activo -->
+      <div *ngIf="duenoSeleccionado" class="alert alert-info d-inline-flex align-items-center">
+        <i class="fas fa-filter me-2"></i>
+        Mostrando mascotas de: <strong class="ms-2">{{ duenoSeleccionado.nombres }} {{ duenoSeleccionado.apellidos }}</strong>
+        <button class="btn btn-sm btn-close ms-3" (click)="limpiarFiltroDueno()"></button>
+      </div>
+    </div>
+    <button class="btn btn-primary" (click)="nueva()">
+      <i class="fas fa-plus me-2"></i>Nueva Mascota
+    </button>
+  </div>
+
+  <!-- Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por nombre, raza o dueño..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarBusqueda()" *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="btn-group w-100" role="group">
+            <button *ngFor="let especie of especies" 
+                    class="btn" 
+                    [class.btn-primary]="filtroEspecie === especie"
+                    [class.btn-outline-primary]="filtroEspecie !== especie"
+                    (click)="cambiarFiltroEspecie(especie)">
+              {{ especie }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3">Cargando mascotas...</p>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <div *ngIf="mascotasFiltradas.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron mascotas</p>
+        <button class="btn btn-primary" (click)="nueva()">
+          <i class="fas fa-plus me-2"></i>Registrar Primera Mascota
+        </button>
+      </div>
+
+      <div *ngIf="mascotasFiltradas.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Mascota</th>
+              <th>Especie</th>
+              <th>Raza</th>
+              <th>Edad</th>
+              <th>Sexo</th>
+              <th>Peso</th>
+              <th>Dueño</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let mascota of mascotasPaginadas">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="mascota-icon me-2" [class]="'bg-' + getColorEspecie(mascota.especie)">
+                    <i class="fas" [class]="getIconoEspecie(mascota.especie)"></i>
+                  </div>
+                  <div>
+                    <strong>{{ mascota.nombre }}</strong>
+                    <br>
+                    <small class="text-muted" *ngIf="mascota.color">{{ mascota.color }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [class]="'bg-' + getColorEspecie(mascota.especie)">
+                  {{ mascota.especie }}
+                </span>
+              </td>
+              <td>{{ mascota.raza || '-' }}</td>
+              <td>
+                <span *ngIf="mascota.edad">{{ mascota.edad }} año{{ mascota.edad > 1 ? 's' : '' }}</span>
+                <span *ngIf="!mascota.edad" class="text-muted">-</span>
+              </td>
+              <td>
+                <i class="fas" [class.fa-mars]="mascota.sexo === 'Macho'" 
+                   [class.fa-venus]="mascota.sexo === 'Hembra'"
+                   [class.text-primary]="mascota.sexo === 'Macho'"
+                   [class.text-danger]="mascota.sexo === 'Hembra'"></i>
+                {{ mascota.sexo || '-' }}
+              </td>
+              <td>
+                <span *ngIf="mascota.peso">{{ mascota.peso }} kg</span>
+                <span *ngIf="!mascota.peso" class="text-muted">-</span>
+              </td>
+              <td>
+                <div *ngIf="mascota.dueno">
+                  <small>{{ mascota.dueno.nombres }} {{ mascota.dueno.apellidos }}</small>
+                  <br>
+                  <small class="text-muted">DNI: {{ mascota.dueno.dni }}</small>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" (click)="ver(mascota.idMascota!)" title="Ver detalles">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-primary" (click)="verOrdenes(mascota.idMascota!)" title="Ver órdenes">
+                    <i class="fas fa-file-medical"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" (click)="editar(mascota.idMascota!)" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="eliminar(mascota)" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <small class="text-muted">
+          Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+          {{ Math.min(paginaActual * itemsPorPagina, mascotasFiltradas.length) }} 
+          de {{ mascotasFiltradas.length }} registros
+        </small>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

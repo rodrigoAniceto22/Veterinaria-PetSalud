@@ -1,0 +1,41 @@
+.mascota-icon {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 1.2rem;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}
+
+.btn-group .btn {
+  font-size: 0.85rem;
+}
+
+.alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 0;
+  border-radius: 0.25rem;
+}

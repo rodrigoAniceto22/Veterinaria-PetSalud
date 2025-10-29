@@ -1,0 +1,68 @@
+<div class="login-container d-flex align-items-center justify-content-center min-vh-100">
+  <div class="login-card card shadow-lg" style="max-width: 450px; width: 100%;">
+    
+    <div class="card-header bg-primary text-white text-center py-4">
+      <i class="fas fa-paw fa-3x mb-3"></i>
+      <h3 class="mb-0">PetSalud</h3>
+      <p class="mb-0 mt-2">Sistema de Gestión Veterinaria</p>
+    </div>
+
+    <div class="card-body p-4">
+      <h5 class="card-title text-center mb-4">Iniciar Sesión</h5>
+
+      <div class="alert alert-danger alert-dismissible fade show" *ngIf="errorMessage">
+        <i class="fas fa-exclamation-circle me-2"></i>{{ errorMessage }}
+        <button type="button" class="btn-close" (click)="errorMessage = ''"></button>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        
+        <div class="mb-3">
+          <label for="username" class="form-label">
+            <i class="fas fa-user me-2"></i>Usuario
+          </label>
+          <input type="text" class="form-control" id="username" formControlName="username"
+                 placeholder="Ingrese su usuario"
+                 [class.is-invalid]="username?.invalid && username?.touched"
+                 [class.is-valid]="username?.valid && username?.touched">
+          <div class="invalid-feedback" *ngIf="username?.invalid && username?.touched">
+            <span *ngIf="username?.errors?.['required']">El usuario es requerido</span>
+            <span *ngIf="username?.errors?.['minlength']">Mínimo 3 caracteres</span>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="password" class="form-label">
+            <i class="fas fa-lock me-2"></i>Contraseña
+          </label>
+          <div class="input-group">
+            <input [type]="mostrarPassword ? 'text' : 'password'" class="form-control" 
+                   id="password" formControlName="password" placeholder="Ingrese su contraseña"
+                   [class.is-invalid]="password?.invalid && password?.touched"
+                   [class.is-valid]="password?.valid && password?.touched">
+            <button class="btn btn-outline-secondary" type="button" (click)="toggleMostrarPassword()">
+              <i class="fas" [class.fa-eye]="!mostrarPassword" [class.fa-eye-slash]="mostrarPassword"></i>
+            </button>
+          </div>
+          <div class="invalid-feedback d-block" *ngIf="password?.invalid && password?.touched">
+            <span *ngIf="password?.errors?.['required']">La contraseña es requerida</span>
+            <span *ngIf="password?.errors?.['minlength']">Mínimo 4 caracteres</span>
+          </div>
+        </div>
+
+        <div class="d-grid">
+          <button type="submit" class="btn btn-primary btn-lg" [disabled]="loading || loginForm.invalid">
+            <span *ngIf="!loading"><i class="fas fa-sign-in-alt me-2"></i>Ingresar</span>
+            <span *ngIf="loading">
+              <span class="spinner-border spinner-border-sm me-2"></span>Iniciando sesión...
+            </span>
+          </button>
+        </div>
+      </form>
+    </div>
+
+    <div class="card-footer text-center text-muted py-3">
+      <small><i class="fas fa-shield-alt me-1"></i>Acceso seguro | © 2025 PetSalud</small>
+    </div>
+  </div>
+</div>

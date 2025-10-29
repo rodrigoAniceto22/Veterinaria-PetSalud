@@ -1,0 +1,197 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-file-medical-alt me-2"></i>Gestión de Resultados</h2>
+      <p class="text-muted">Resultados de análisis veterinarios</p>
+    </div>
+    <button class="btn btn-primary" (click)="nuevo()">
+      <i class="fas fa-plus me-2"></i>Nuevo Resultado
+    </button>
+  </div>
+
+  <!-- Buscador y Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" 
+                   placeholder="Buscar por descripción, valores o conclusiones..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" 
+                    (click)="limpiarBusqueda()" *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6">
+          <div class="btn-group w-100" role="group">
+            <button *ngFor="let estado of estados" 
+                    class="btn" 
+                    [class.btn-primary]="filtroEstado === estado"
+                    [class.btn-outline-primary]="filtroEstado !== estado"
+                    (click)="cambiarFiltroEstado(estado)">
+              {{ estado }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">Cargando resultados...</p>
+  </div>
+
+  <!-- Tabla de Resultados -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <!-- Sin resultados -->
+      <div *ngIf="resultadosFiltrados.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron resultados</p>
+        <button class="btn btn-primary" (click)="nuevo()">
+          <i class="fas fa-plus me-2"></i>Registrar Primer Resultado
+        </button>
+      </div>
+
+      <!-- Tabla -->
+      <div *ngIf="resultadosFiltrados.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Orden</th>
+              <th>Descripción</th>
+              <th>Estado</th>
+              <th>Validación</th>
+              <th>Entrega</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let resultado of resultadosPaginados">
+              <td><strong>#{{ resultado.idResultado }}</strong></td>
+              <td>
+                <small>{{ resultado.fechaResultado | date:'dd/MM/yyyy HH:mm' }}</small>
+              </td>
+              <td>
+                <div *ngIf="resultado.orden">
+                  <small><strong>Orden #{{ resultado.orden.idOrden }}</strong></small>
+                  <br>
+                  <small class="text-muted">{{ resultado.orden.tipoExamen }}</small>
+                </div>
+              </td>
+              <td>
+                <div class="text-truncate" style="max-width: 250px;">
+                  {{ resultado.descripcion || '-' }}
+                </div>
+              </td>
+              <td>
+                <span class="badge" [class]="'bg-' + getEstadoBadge(resultado)">
+                  <i class="fas" [class]="getEstadoIcono(resultado)"></i>
+                  {{ getEstadoTexto(resultado) }}
+                </span>
+              </td>
+              <td>
+                <div *ngIf="resultado.validado">
+                  <i class="fas fa-check-circle text-success"></i>
+                  <small class="d-block text-muted">
+                    {{ resultado.fechaValidacion | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </div>
+                <div *ngIf="!resultado.validado">
+                  <i class="fas fa-clock text-warning"></i>
+                  <small class="text-muted">Pendiente</small>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="resultado.entregado">
+                  <i class="fas fa-check-double text-success"></i>
+                  <small class="d-block text-muted">
+                    {{ resultado.fechaEntrega | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                </div>
+                <div *ngIf="!resultado.entregado">
+                  <i class="fas fa-times-circle text-secondary"></i>
+                  <small class="text-muted">No entregado</small>
+                </div>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" 
+                          (click)="ver(resultado.idResultado!)" 
+                          title="Ver detalles">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" 
+                          (click)="descargarPDF(resultado.idResultado!)" 
+                          title="Descargar PDF"
+                          [disabled]="!resultado.validado">
+                    <i class="fas fa-file-pdf"></i>
+                  </button>
+                  <button class="btn btn-outline-success" 
+                          (click)="validar(resultado)" 
+                          title="Validar resultado"
+                          [disabled]="resultado.validado">
+                    <i class="fas fa-check"></i>
+                  </button>
+                  <button class="btn btn-outline-primary" 
+                          (click)="marcarComoEntregado(resultado)" 
+                          title="Marcar como entregado"
+                          [disabled]="resultado.entregado || !resultado.validado">
+                    <i class="fas fa-hand-holding"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" 
+                          (click)="editar(resultado.idResultado!)" 
+                          title="Editar"
+                          [disabled]="resultado.validado">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" 
+                          (click)="eliminar(resultado)" 
+                          title="Eliminar"
+                          [disabled]="resultado.validado">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <small class="text-muted">
+            Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+            {{ Math.min(paginaActual * itemsPorPagina, resultadosFiltrados.length) }} 
+            de {{ resultadosFiltrados.length }} registros
+          </small>
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-// src/app/models/mascota.model.ts
 export interface Mascota {
   idMascota?: number;
   nombre: string;
@@ -9,6 +8,6 @@ export interface Mascota {
   peso?: number;
   color?: string;
   observaciones?: string;
-  dueno?: Dueno;
-  idDueno?: number;
+  dueno?: any;
+  ordenes?: any[];
 }

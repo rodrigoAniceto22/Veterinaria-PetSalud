@@ -1,0 +1,162 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-home me-2"></i>Dashboard</h2>
+      <p class="text-muted">Panel de control - Sistema PetSalud</p>
+    </div>
+    <button class="btn btn-primary" (click)="refrescar()" [disabled]="loading">
+      <i class="fas fa-sync-alt" [class.fa-spin]="loading"></i> Refrescar
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status">
+      <span class="visually-hidden">Cargando...</span>
+    </div>
+    <p class="mt-3">Cargando dashboard...</p>
+  </div>
+
+  <!-- Contenido -->
+  <div *ngIf="!loading">
+    
+    <!-- KPIs -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-muted mb-1">Total Órdenes</p>
+                <h3 class="mb-0">{{ totalOrdenes }}</h3>
+              </div>
+              <div class="icon-box bg-primary">
+                <i class="fas fa-file-medical fa-2x text-white"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-muted mb-1">Pendientes</p>
+                <h3 class="mb-0 text-warning">{{ ordenesPendientes }}</h3>
+              </div>
+              <div class="icon-box bg-warning">
+                <i class="fas fa-clock fa-2x text-white"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-muted mb-1">Resultados Validados</p>
+                <h3 class="mb-0 text-success">{{ resultadosValidados }}</h3>
+              </div>
+              <div class="icon-box bg-success">
+                <i class="fas fa-check-circle fa-2x text-white"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3">
+        <div class="card border-0 shadow-sm h-100">
+          <div class="card-body">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <p class="text-muted mb-1">Ingresos del Mes</p>
+                <h3 class="mb-0 text-info">S/. {{ ingresosMes | number:'1.2-2' }}</h3>
+              </div>
+              <div class="icon-box bg-info">
+                <i class="fas fa-dollar-sign fa-2x text-white"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="row g-3 mb-4">
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Órdenes por Estado</h5>
+          </div>
+          <div class="card-body">
+            <div *ngFor="let item of ordenesPorEstado" class="mb-3">
+              <div class="d-flex justify-content-between mb-1">
+                <span>{{ item.estado }}</span>
+                <span class="badge" [ngClass]="getBadgeClass(item.estado)">{{ item.cantidad }}</span>
+              </div>
+              <div class="progress" style="height: 10px;">
+                <div class="progress-bar" [ngClass]="getBadgeClass(item.estado)" 
+                     [style.width.%]="(item.cantidad / totalOrdenes * 100)"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-6">
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white">
+            <h5 class="mb-0"><i class="fas fa-paw me-2"></i>Especies Atendidas</h5>
+          </div>
+          <div class="card-body">
+            <ul class="list-group list-group-flush">
+              <li class="list-group-item d-flex justify-content-between" *ngFor="let especie of especiesAtendidas">
+                <span><i class="fas fa-dog me-2 text-primary"></i>{{ especie.nombre }}</span>
+                <span class="badge bg-primary rounded-pill">{{ especie.cantidad }}</span>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Accesos Rápidos -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-bolt me-2"></i>Accesos Rápidos</h5>
+      </div>
+      <div class="card-body">
+        <div class="row g-3">
+          <div class="col-md-3">
+            <a routerLink="/ordenes" class="btn btn-outline-primary w-100">
+              <i class="fas fa-file-medical fa-2x mb-2"></i><br>Nueva Orden
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a routerLink="/mascotas" class="btn btn-outline-success w-100">
+              <i class="fas fa-dog fa-2x mb-2"></i><br>Registrar Mascota
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a routerLink="/resultados" class="btn btn-outline-info w-100">
+              <i class="fas fa-clipboard-check fa-2x mb-2"></i><br>Resultados
+            </a>
+          </div>
+          <div class="col-md-3">
+            <a routerLink="/reportes/kpis" class="btn btn-outline-warning w-100">
+              <i class="fas fa-chart-bar fa-2x mb-2"></i><br>Reportes
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

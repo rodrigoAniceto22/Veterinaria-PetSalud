@@ -1,45 +1,49 @@
-
-// ===================================================
-// src/app/services/tecnico.service.ts
-// ===================================================
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
-import { Tecnico } from '../models/tecnico.model';
+import { TecnicoVeterinario } from '../models/tecnico.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TecnicoService {
-  private apiUrl = `${environment.apiUrl}/tecnicos`;
-  private headers = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
+  private apiUrl = 'http://localhost:8080/api/tecnicos';
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Tecnico[]> {
-    return this.http.get<Tecnico[]>(this.apiUrl, { headers: this.headers });
+  listarTodos(): Observable<TecnicoVeterinario[]> {
+    return this.http.get<TecnicoVeterinario[]>(this.apiUrl);
   }
 
-  getById(id: number): Observable<Tecnico> {
-    return this.http.get<Tecnico>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  obtenerPorId(id: number): Observable<TecnicoVeterinario> {
+    return this.http.get<TecnicoVeterinario>(`${this.apiUrl}/${id}`);
   }
 
-  getDisponibles(): Observable<Tecnico[]> {
-    return this.http.get<Tecnico[]>(`${this.apiUrl}/disponibles`, { headers: this.headers });
+  buscarPorEspecialidad(especialidad: string): Observable<TecnicoVeterinario[]> {
+    return this.http.get<TecnicoVeterinario[]>(`${this.apiUrl}/especialidad/${especialidad}`);
   }
 
-  create(tecnico: Tecnico): Observable<Tecnico> {
-    return this.http.post<Tecnico>(this.apiUrl, tecnico, { headers: this.headers });
+  buscarPorNombre(nombre: string): Observable<TecnicoVeterinario[]> {
+    return this.http.get<TecnicoVeterinario[]>(`${this.apiUrl}/buscar?nombre=${nombre}`);
   }
 
-  update(id: number, tecnico: Tecnico): Observable<Tecnico> {
-    return this.http.put<Tecnico>(`${this.apiUrl}/${id}`, tecnico, { headers: this.headers });
+  obtenerDisponibles(): Observable<TecnicoVeterinario[]> {
+    return this.http.get<TecnicoVeterinario[]>(`${this.apiUrl}/disponibles`);
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  crear(tecnico: TecnicoVeterinario): Observable<TecnicoVeterinario> {
+    return this.http.post<TecnicoVeterinario>(this.apiUrl, tecnico);
+  }
+
+  actualizar(id: number, tecnico: TecnicoVeterinario): Observable<TecnicoVeterinario> {
+    return this.http.put<TecnicoVeterinario>(`${this.apiUrl}/${id}`, tecnico);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  obtenerTomasMuestra(id: number): Observable<any[]> {
+    return this.http.get<any[]>(`${this.apiUrl}/${id}/tomas-muestra`);
   }
 }

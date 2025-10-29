@@ -1,0 +1,51 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.form-control,
+.form-select {
+  border-left: none;
+}
+
+.form-control:focus + .input-group-text,
+.form-select:focus + .input-group-text {
+  border-color: #667eea;
+}
+
+textarea.form-control {
+  resize: vertical;
+  font-family: 'Courier New', monospace;
+  font-size: 0.9rem;
+}
+
+.alert {
+  border-radius: 8px;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.4em 0.7em;
+}
+
+.btn-group .btn {
+  margin-right: 0.5rem;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}

@@ -1,5 +1,4 @@
-// src/app/models/tecnico.model.ts
-export interface Tecnico {
+export interface TecnicoVeterinario {
   idTecnico?: number;
   nombres: string;
   apellidos: string;
@@ -8,4 +7,5 @@ export interface Tecnico {
   email?: string;
   certificacion?: string;
   activo?: boolean;
+  tomasMuestra?: any[];
 }

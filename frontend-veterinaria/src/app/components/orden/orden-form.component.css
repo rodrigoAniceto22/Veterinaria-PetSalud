@@ -1,0 +1,49 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.form-control:focus, .form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.form-control, .form-select {
+  border-left: none;
+}
+
+.form-control:focus + .input-group-text,
+.form-select:focus + .input-group-text {
+  border-color: #667eea;
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumb-item a {
+  text-decoration: none;
+  color: #667eea;
+}
+
+.breadcrumb-item.active {
+  color: #6c757d;
+}
+
+select.form-select option {
+  padding: 10px;
+}

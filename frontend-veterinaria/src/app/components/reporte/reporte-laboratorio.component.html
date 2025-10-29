@@ -1,0 +1,286 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-flask me-2"></i>Reportes de Laboratorio</h2>
+      <p class="text-muted">Análisis detallado de servicios veterinarios</p>
+    </div>
+    <div class="action-buttons">
+      <button class="btn btn-outline-primary btn-export" (click)="refrescar()">
+        <i class="fas fa-sync-alt me-2"></i>Actualizar
+      </button>
+      <button class="btn btn-outline-success btn-export" (click)="exportarExcel()">
+        <i class="fas fa-file-excel me-2"></i>Excel
+      </button>
+      <button class="btn btn-outline-danger btn-export" (click)="exportarPDF()">
+        <i class="fas fa-file-pdf me-2"></i>PDF
+      </button>
+      <button class="btn btn-outline-secondary btn-export" (click)="imprimirReporte()">
+        <i class="fas fa-print me-2"></i>Imprimir
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3 text-primary">Cargando reportes de laboratorio...</p>
+  </div>
+
+  <!-- Filtros -->
+  <div *ngIf="!loading" class="filter-card fade-in-up">
+    <h5 class="mb-4"><i class="fas fa-filter me-2"></i>Filtros de Búsqueda</h5>
+    <div class="row g-3">
+      <div class="col-md-3">
+        <label for="fechaInicio" class="form-label">Fecha Inicio</label>
+        <input type="date" class="form-control" id="fechaInicio" [(ngModel)]="fechaInicio">
+      </div>
+      <div class="col-md-3">
+        <label for="fechaFin" class="form-label">Fecha Fin</label>
+        <input type="date" class="form-control" id="fechaFin" [(ngModel)]="fechaFin">
+      </div>
+      <div class="col-md-3">
+        <label for="tipoExamen" class="form-label">Tipo de Examen</label>
+        <select class="form-select" id="tipoExamen" [(ngModel)]="tipoExamen" (change)="aplicarFiltrosTabla()">
+          <option *ngFor="let tipo of tiposExamen" [value]="tipo === 'TODOS' ? '' : tipo">{{ tipo }}</option>
+        </select>
+      </div>
+      <div class="col-md-3 d-flex align-items-end gap-2">
+        <button class="btn btn-light flex-grow-1" (click)="aplicarFiltros()">
+          <i class="fas fa-search me-2"></i>Buscar
+        </button>
+        <button class="btn btn-outline-light" (click)="limpiarFiltros()">
+          <i class="fas fa-eraser"></i>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Resumen Ejecutivo -->
+  <div *ngIf="!loading && analisisPorTipo" class="row g-4 mb-4 fade-in-up">
+    <div class="col-lg-3 col-md-6">
+      <div class="stats-box border-primary">
+        <div class="stats-icon bg-primary">
+          <i class="fas fa-vial"></i>
+        </div>
+        <div class="stats-value">{{ analisisPorTipo.totalAnalisis || 0 }}</div>
+        <div class="stats-label">Total Análisis</div>
+        <div class="stats-description">Período seleccionado</div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stats-box border-success">
+        <div class="stats-icon bg-success">
+          <i class="fas fa-check-double"></i>
+        </div>
+        <div class="stats-value">{{ productividadVeterinarios?.totalOrdenes || 0 }}</div>
+        <div class="stats-label">Órdenes Procesadas</div>
+        <div class="stats-description">Por veterinarios</div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stats-box border-warning">
+        <div class="stats-icon bg-warning">
+          <i class="fas fa-syringe"></i>
+        </div>
+        <div class="stats-value">{{ productividadTecnicos?.totalTomas || 0 }}</div>
+        <div class="stats-label">Muestras Tomadas</div>
+        <div class="stats-description">Por técnicos</div>
+      </div>
+    </div>
+
+    <div class="col-lg-3 col-md-6">
+      <div class="stats-box border-info">
+        <div class="stats-icon bg-info">
+          <i class="fas fa-dollar-sign"></i>
+        </div>
+        <div class="stats-value">{{ formatearMoneda(ingresos?.totalIngresos || 0) }}</div>
+        <div class="stats-label">Ingresos Generados</div>
+        <div class="stats-description">Total del período</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos Principales -->
+  <div *ngIf="!loading" class="row g-4 mb-4 slide-in-right">
+    <!-- Análisis por Tipo -->
+    <div class="col-lg-6">
+      <div class="report-card">
+        <div class="card-header">
+          <h5><i class="fas fa-chart-pie me-2"></i>Análisis por Tipo de Examen</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="chartAnalisisPorTipo.labels.length > 0" class="chart-container">
+            <canvas id="chartAnalisisPorTipoLab"></canvas>
+          </div>
+          <div *ngIf="chartAnalisisPorTipo.labels.length === 0" class="empty-state">
+            <i class="fas fa-chart-pie"></i>
+            <p>No hay datos disponibles</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Productividad Veterinarios -->
+    <div class="col-lg-6">
+      <div class="report-card">
+        <div class="card-header">
+          <h5><i class="fas fa-user-md me-2"></i>Productividad de Veterinarios</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="chartProductividadVet.labels.length > 0" class="chart-container">
+            <canvas id="chartProductividadVet"></canvas>
+          </div>
+          <div *ngIf="chartProductividadVet.labels.length === 0" class="empty-state">
+            <i class="fas fa-user-md"></i>
+            <p>No hay datos disponibles</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Más Gráficos -->
+  <div *ngIf="!loading" class="row g-4 mb-4 slide-in-right">
+    <!-- Productividad Técnicos -->
+    <div class="col-lg-6">
+      <div class="report-card">
+        <div class="card-header">
+          <h5><i class="fas fa-user-nurse me-2"></i>Productividad de Técnicos</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="chartProductividadTec.labels.length > 0" class="chart-container">
+            <canvas id="chartProductividadTec"></canvas>
+          </div>
+          <div *ngIf="chartProductividadTec.labels.length === 0" class="empty-state">
+            <i class="fas fa-user-nurse"></i>
+            <p>No hay datos disponibles</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ingresos -->
+    <div class="col-lg-6">
+      <div class="report-card">
+        <div class="card-header">
+          <h5><i class="fas fa-chart-line me-2"></i>Ingresos por Período</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="chartIngresosMensuales.labels.length > 0" class="chart-container">
+            <canvas id="chartIngresos"></canvas>
+          </div>
+          <div *ngIf="chartIngresosMensuales.labels.length === 0" class="empty-state">
+            <i class="fas fa-chart-line"></i>
+            <p>No hay datos disponibles</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla Detallada de Análisis -->
+  <div *ngIf="!loading && tablaAnalisisFiltrada.length > 0" class="report-card fade-in-up">
+    <div class="card-header">
+      <h5><i class="fas fa-table me-2"></i>Detalle de Análisis por Tipo</h5>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-laboratorio">
+          <thead>
+            <tr>
+              <th (click)="cambiarOrden('tipo')">
+                Tipo de Examen
+                <i class="fas" [class.fa-sort-up]="ordenarPor === 'tipo' && !ordenAscendente"
+                   [class.fa-sort-down]="ordenarPor === 'tipo' && ordenAscendente"
+                   [class.fa-sort]="ordenarPor !== 'tipo'"></i>
+              </th>
+              <th (click)="cambiarOrden('cantidad')" class="text-center">
+                Cantidad
+                <i class="fas" [class.fa-sort-up]="ordenarPor === 'cantidad' && !ordenAscendente"
+                   [class.fa-sort-down]="ordenarPor === 'cantidad' && ordenAscendente"
+                   [class.fa-sort]="ordenarPor !== 'cantidad'"></i>
+              </th>
+              <th (click)="cambiarOrden('porcentaje')" class="text-center">
+                Porcentaje
+                <i class="fas" [class.fa-sort-up]="ordenarPor === 'porcentaje' && !ordenAscendente"
+                   [class.fa-sort-down]="ordenarPor === 'porcentaje' && ordenAscendente"
+                   [class.fa-sort]="ordenarPor !== 'porcentaje'"></i>
+              </th>
+              <th>Visualización</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of tablaAnalisisPaginada">
+              <td>
+                <span class="type-badge" [class]="'bg-' + getColorTipoExamen(item.tipo)">
+                  <i class="fas" [class]="getIconoTipoExamen(item.tipo)"></i>
+                  {{ item.tipo }}
+                </span>
+              </td>
+              <td class="text-center">
+                <strong class="h5 mb-0">{{ item.cantidad }}</strong>
+              </td>
+              <td class="text-center">
+                <span class="badge bg-primary" style="font-size: 1rem; padding: 0.5rem 1rem;">
+                  {{ item.porcentaje }}%
+                </span>
+              </td>
+              <td>
+                <div class="progress-custom">
+                  <div class="progress-bar" 
+                       [style.width.%]="item.porcentaje"
+                       [class]="'bg-' + getColorTipoExamen(item.tipo)"></div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-4">
+        <small class="text-muted">
+          Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+          {{ Math.min(paginaActual * itemsPorPagina, tablaAnalisisFiltrada.length) }} 
+          de {{ tablaAnalisisFiltrada.length }} registros
+        </small>
+        <nav>
+          <ul class="pagination pagination-sm pagination-laboratorio mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">
+                <i class="fas fa-chevron-left"></i>
+              </a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">
+                <i class="fas fa-chevron-right"></i>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <!-- Empty State -->
+  <div *ngIf="!loading && tablaAnalisisFiltrada.length === 0" class="report-card">
+    <div class="card-body">
+      <div class="empty-state">
+        <i class="fas fa-flask"></i>
+        <p>No se encontraron análisis en el período seleccionado</p>
+        <button class="btn btn-primary" (click)="limpiarFiltros()">
+          <i class="fas fa-sync-alt me-2"></i>Restablecer Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+</div>

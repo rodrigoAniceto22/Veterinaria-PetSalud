@@ -1,0 +1,219 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>
+        <i class="fas fa-dog me-2"></i>
+        <span *ngIf="!modoEdicion && !modoVista">Nueva Mascota</span>
+        <span *ngIf="modoEdicion">Editar Mascota</span>
+        <span *ngIf="modoVista">Detalles de Mascota</span>
+      </h2>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a routerLink="/mascotas">Mascotas</a></li>
+          <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : (modoVista ? 'Ver' : 'Nueva') }}</li>
+        </ol>
+      </nav>
+    </div>
+    <button class="btn btn-outline-secondary" (click)="volver()">
+      <i class="fas fa-arrow-left me-2"></i>Volver
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3">Cargando información...</p>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="!loading" class="row">
+    <div class="col-lg-8 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0"><i class="fas fa-paw me-2"></i>Información de la Mascota</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="mascotaForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Nombre y Especie -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="nombre" class="form-label">Nombre <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-paw"></i></span>
+                  <input type="text" class="form-control" id="nombre" formControlName="nombre"
+                         placeholder="Ej: Max"
+                         [class.is-invalid]="nombre?.invalid && nombre?.touched"
+                         [class.is-valid]="nombre?.valid && nombre?.touched">
+                  <div class="invalid-feedback" *ngIf="nombre?.invalid && nombre?.touched">
+                    <span *ngIf="nombre?.errors?.['required']">El nombre es requerido</span>
+                    <span *ngIf="nombre?.errors?.['minlength']">Mínimo 2 caracteres</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="especie" class="form-label">Especie <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-dog"></i></span>
+                  <select class="form-select" id="especie" formControlName="especie"
+                          [class.is-invalid]="especie?.invalid && especie?.touched"
+                          [class.is-valid]="especie?.valid && especie?.touched">
+                    <option value="">Seleccione especie</option>
+                    <option *ngFor="let esp of especies" [value]="esp">{{ esp }}</option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="especie?.invalid && especie?.touched">
+                    La especie es requerida
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Raza y Sexo -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="raza" class="form-label">Raza</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-dna"></i></span>
+                  <select class="form-select" id="raza" formControlName="raza">
+                    <option value="">Seleccione raza</option>
+                    <option *ngFor="let r of razasDisponibles" [value]="r">{{ r }}</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="sexo" class="form-label">Sexo</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                  <select class="form-select" id="sexo" formControlName="sexo">
+                    <option value="">Seleccione sexo</option>
+                    <option *ngFor="let s of sexos" [value]="s">{{ s }}</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Edad y Peso -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="edad" class="form-label">Edad (años)</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-birthday-cake"></i></span>
+                  <input type="number" class="form-control" id="edad" formControlName="edad"
+                         placeholder="Ej: 3" min="0" max="30"
+                         [class.is-invalid]="edad?.invalid && edad?.touched">
+                  <span class="input-group-text">años</span>
+                  <div class="invalid-feedback" *ngIf="edad?.invalid && edad?.touched">
+                    <span *ngIf="edad?.errors?.['min']">La edad debe ser positiva</span>
+                    <span *ngIf="edad?.errors?.['max']">Edad máxima 30 años</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="peso" class="form-label">Peso</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-weight"></i></span>
+                  <input type="number" class="form-control" id="peso" formControlName="peso"
+                         placeholder="Ej: 15.5" min="0.1" max="500" step="0.1"
+                         [class.is-invalid]="peso?.invalid && peso?.touched">
+                  <span class="input-group-text">kg</span>
+                  <div class="invalid-feedback" *ngIf="peso?.invalid && peso?.touched">
+                    <span *ngIf="peso?.errors?.['min']">El peso debe ser positivo</span>
+                    <span *ngIf="peso?.errors?.['max']">Peso máximo 500 kg</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Color -->
+            <div class="mb-3">
+              <label for="color" class="form-label">Color</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-palette"></i></span>
+                <input type="text" class="form-control" id="color" formControlName="color"
+                       placeholder="Ej: Café con blanco">
+              </div>
+            </div>
+
+            <!-- Dueño -->
+            <div class="mb-3">
+              <label for="dueno" class="form-label">Dueño <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                <select class="form-select" id="dueno" formControlName="dueno"
+                        [class.is-invalid]="dueno?.invalid && dueno?.touched"
+                        [class.is-valid]="dueno?.valid && dueno?.touched">
+                  <option value="">Seleccione dueño</option>
+                  <option *ngFor="let d of duenos" [value]="d.idDueno">
+                    {{ d.nombres }} {{ d.apellidos }} - {{ d.dni }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="dueno?.invalid && dueno?.touched">
+                  Debe seleccionar un dueño
+                </div>
+              </div>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-notes-medical"></i></span>
+                <textarea class="form-control" id="observaciones" formControlName="observaciones"
+                          rows="3" placeholder="Información adicional, alergias, condiciones especiales..."></textarea>
+              </div>
+              <small class="text-muted">Opcional</small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-secondary" (click)="volver()">
+                <i class="fas fa-times me-2"></i>Cancelar
+              </button>
+              
+              <button *ngIf="modoVista" type="button" class="btn btn-warning" (click)="editar()">
+                <i class="fas fa-edit me-2"></i>Editar
+              </button>
+
+              <button *ngIf="!modoVista" type="submit" class="btn btn-primary" 
+                      [disabled]="guardando || mascotaForm.invalid">
+                <span *ngIf="!guardando">
+                  <i class="fas fa-save me-2"></i>{{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+                </span>
+                <span *ngIf="guardando">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Información adicional (solo en modo vista) -->
+      <div *ngIf="modoVista" class="card shadow-sm mt-3">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información Adicional</h5>
+        </div>
+        <div class="card-body">
+          <p class="mb-2">
+            <i class="fas fa-file-medical me-2 text-primary"></i>
+            <a routerLink="/ordenes" [queryParams]="{mascota: mascotaId}" class="text-decoration-none">
+              Ver historial de órdenes médicas
+            </a>
+          </p>
+          <p class="mb-0">
+            <i class="fas fa-user me-2 text-success"></i>
+            <a routerLink="/duenos" class="text-decoration-none">
+              Ver información del dueño
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

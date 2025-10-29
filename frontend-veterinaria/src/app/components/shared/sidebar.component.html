@@ -1,0 +1,41 @@
+<div class="sidebar bg-dark text-white vh-100 position-fixed" style="width: 250px; overflow-y: auto;">
+  <div class="sidebar-header p-3 border-bottom border-secondary">
+    <h5 class="mb-0"><i class="fas fa-paw me-2"></i>Veterinaria</h5>
+    <small class="text-muted">Sistema PetSalud</small>
+  </div>
+
+  <nav class="sidebar-menu p-2">
+    <ul class="nav flex-column">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        
+        <a *ngIf="!item.submenu" 
+           [routerLink]="item.route" 
+           routerLinkActive="active"
+           class="nav-link text-white">
+          <i class="fas {{ item.icon }} me-2"></i>{{ item.label }}
+        </a>
+
+        <div *ngIf="item.submenu">
+          <a (click)="toggleSubmenu(item.label)" 
+             class="nav-link text-white d-flex justify-content-between align-items-center"
+             style="cursor: pointer;">
+            <span><i class="fas {{ item.icon }} me-2"></i>{{ item.label }}</span>
+            <i class="fas fa-chevron-down" [class.rotate-180]="isSubmenuOpen(item.label)"></i>
+          </a>
+          
+          <ul class="submenu list-unstyled ps-4" [class.show]="isSubmenuOpen(item.label)">
+            <li *ngFor="let subitem of item.submenu">
+              <a [routerLink]="subitem.route" routerLinkActive="active" class="nav-link text-white-50 py-2">
+                <i class="fas {{ subitem.icon }} me-2"></i>{{ subitem.label }}
+              </a>
+            </li>
+          </ul>
+        </div>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="sidebar-footer p-3 border-top border-secondary">
+    <small class="text-muted"><i class="fas fa-info-circle me-1"></i>Versión 1.0.0</small>
+  </div>
+</div>

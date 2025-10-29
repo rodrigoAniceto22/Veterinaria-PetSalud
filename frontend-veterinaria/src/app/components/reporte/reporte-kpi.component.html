@@ -1,0 +1,362 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-chart-line me-2"></i>Dashboard de KPIs</h2>
+      <p class="text-muted">Indicadores clave de rendimiento del sistema</p>
+    </div>
+    <div class="btn-group">
+      <button class="btn btn-outline-primary" (click)="refrescar()">
+        <i class="fas fa-sync-alt me-2"></i>Actualizar
+      </button>
+      <button class="btn btn-outline-success" (click)="exportarExcel()">
+        <i class="fas fa-file-excel me-2"></i>Excel
+      </button>
+      <button class="btn btn-outline-danger" (click)="exportarPDF()">
+        <i class="fas fa-file-pdf me-2"></i>PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- Loading Overlay -->
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-spinner">
+      <div class="spinner-border text-primary" role="status"></div>
+      <p class="mt-3 text-primary">Cargando dashboard...</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div *ngIf="!loading" class="filter-section fade-in-up">
+    <div class="row align-items-end g-3">
+      <div class="col-md-4">
+        <label for="fechaInicio" class="form-label">
+          <i class="fas fa-calendar-alt me-2"></i>Fecha Inicio
+        </label>
+        <input type="date" class="form-control" id="fechaInicio" 
+               [(ngModel)]="fechaInicio">
+      </div>
+      <div class="col-md-4">
+        <label for="fechaFin" class="form-label">
+          <i class="fas fa-calendar-alt me-2"></i>Fecha Fin
+        </label>
+        <input type="date" class="form-control" id="fechaFin" 
+               [(ngModel)]="fechaFin">
+      </div>
+      <div class="col-md-4">
+        <button class="btn btn-light w-100" (click)="aplicarFiltros()">
+          <i class="fas fa-filter me-2"></i>Aplicar Filtros
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs Principales -->
+  <div *ngIf="!loading" class="row g-4 mb-4 fade-in-up">
+    <!-- Total Órdenes -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-primary-gradient me-3">
+              <i class="fas fa-file-medical"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="kpi-label">Total Órdenes</p>
+              <h3 class="kpi-value">{{ kpis.totalOrdenes || 0 }}</h3>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">Pendientes: {{ kpis.ordenesPendientes || 0 }}</small>
+                <span class="badge bg-primary">{{ calcularPorcentaje(kpis.ordenesCompletadas, kpis.totalOrdenes) }}% completadas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Resultados Validados -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-success-gradient me-3">
+              <i class="fas fa-check-circle"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="kpi-label">Resultados Validados</p>
+              <h3 class="kpi-value">{{ kpis.resultadosValidados || 0 }}</h3>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">Pendientes: {{ kpis.resultadosPendientes || 0 }}</small>
+                <span class="badge bg-success">
+                  {{ calcularPorcentaje(kpis.resultadosValidados, kpis.resultadosValidados + kpis.resultadosPendientes) }}% validados
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Facturado -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-warning-gradient me-3">
+              <i class="fas fa-dollar-sign"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="kpi-label">Total Facturado</p>
+              <h3 class="kpi-value">{{ formatearMoneda(kpis.totalFacturado || 0) }}</h3>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">Pendientes: {{ kpis.facturasPendientes || 0 }}</small>
+                <span class="badge bg-warning text-dark">Este mes</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Total Mascotas -->
+    <div class="col-xl-3 col-md-6">
+      <div class="card kpi-card shadow-sm">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="kpi-icon bg-info-gradient me-3">
+              <i class="fas fa-dog"></i>
+            </div>
+            <div class="flex-grow-1">
+              <p class="kpi-label">Total Mascotas</p>
+              <h3 class="kpi-value">{{ kpis.totalMascotas || 0 }}</h3>
+              <div class="d-flex justify-content-between align-items-center mt-2">
+                <small class="text-muted">Dueños: {{ kpis.totalDuenos || 0 }}</small>
+                <span class="badge bg-info">Registradas</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos y Estadísticas -->
+  <div *ngIf="!loading" class="row g-4 mb-4 fade-in-up">
+    <!-- Órdenes por Estado -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header card-header-kpi">
+          <h5><i class="fas fa-chart-pie me-2"></i>Órdenes por Estado</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="ordenesPorEstado.labels.length > 0" class="chart-container">
+            <canvas id="chartOrdenesPorEstado"></canvas>
+          </div>
+          <div *ngIf="ordenesPorEstado.labels.length === 0" class="text-center py-5">
+            <i class="fas fa-chart-pie fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No hay datos disponibles</p>
+          </div>
+          
+          <!-- Leyenda -->
+          <div class="mt-3">
+            <div class="row g-2">
+              <div class="col-6" *ngFor="let label of ordenesPorEstado.labels; let i = index">
+                <div class="d-flex align-items-center">
+                  <div class="rounded-circle me-2" 
+                       [style.background-color]="ordenesPorEstado.colors[i]"
+                       style="width: 12px; height: 12px;"></div>
+                  <small class="text-muted">{{ label }}: <strong>{{ ordenesPorEstado.data[i] }}</strong></small>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Especies Más Atendidas -->
+    <div class="col-lg-6">
+      <div class="card shadow-sm">
+        <div class="card-header card-header-kpi">
+          <h5><i class="fas fa-chart-bar me-2"></i>Especies Más Atendidas</h5>
+        </div>
+        <div class="card-body">
+          <div *ngIf="especiesAtendidas.labels.length > 0" class="chart-container">
+            <canvas id="chartEspeciesAtendidas"></canvas>
+          </div>
+          <div *ngIf="especiesAtendidas.labels.length === 0" class="text-center py-5">
+            <i class="fas fa-chart-bar fa-3x text-muted mb-3"></i>
+            <p class="text-muted">No hay datos disponibles</p>
+          </div>
+
+          <!-- Lista -->
+          <div class="mt-3">
+            <div *ngFor="let label of especiesAtendidas.labels; let i = index" class="mb-2">
+              <div class="d-flex justify-content-between align-items-center mb-1">
+                <small><strong>{{ label }}</strong></small>
+                <small class="text-muted">{{ especiesAtendidas.data[i] }} atenciones</small>
+              </div>
+              <div class="progress" style="height: 8px;">
+                <div class="progress-bar" 
+                     [style.width]="calcularPorcentaje(especiesAtendidas.data[i], especiesAtendidas.data[0]) + '%'"
+                     [style.background-color]="especiesAtendidas.colors[i]"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- KPIs Específicos -->
+  <div *ngIf="!loading" class="row g-4 mb-4 fade-in-up">
+    <!-- Tiempo Promedio -->
+    <div class="col-lg-4">
+      <div class="card stats-card border-primary shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="stat-title text-primary">
+                <i class="fas fa-clock me-2"></i>Tiempo Promedio
+              </p>
+              <h3 class="stat-value" *ngIf="tiempoPromedio">
+                {{ formatearTiempo(tiempoPromedio.tiempoPromedioHoras || 0) }}
+              </h3>
+              <h3 class="stat-value" *ngIf="!tiempoPromedio">--</h3>
+            </div>
+            <button class="btn btn-sm btn-primary" (click)="cargarTiempoPromedio()">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+          <p class="stat-description">
+            Entre toma de muestra y entrega de resultados
+          </p>
+          <div *ngIf="tiempoPromedio" class="mt-3">
+            <small class="text-muted d-block">Total analizado: {{ tiempoPromedio.totalAnalizados || 0 }}</small>
+            <small class="text-muted d-block">Período: {{ fechaInicio }} a {{ fechaFin }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Análisis Repetidos -->
+    <div class="col-lg-4">
+      <div class="card stats-card border-warning shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="stat-title text-warning">
+                <i class="fas fa-redo me-2"></i>Análisis Repetidos
+              </p>
+              <h3 class="stat-value" *ngIf="analisisRepetidos">
+                {{ analisisRepetidos.porcentajeRepetidos || 0 }}%
+              </h3>
+              <h3 class="stat-value" *ngIf="!analisisRepetidos">--</h3>
+            </div>
+            <button class="btn btn-sm btn-warning" (click)="cargarAnalisisRepetidos()">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+          <p class="stat-description">
+            Por error de registro o manipulación
+          </p>
+          <div *ngIf="analisisRepetidos" class="mt-3">
+            <small class="text-muted d-block">Repetidos: {{ analisisRepetidos.totalRepetidos || 0 }}</small>
+            <small class="text-muted d-block">Total: {{ analisisRepetidos.totalAnalisis || 0 }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tratamientos Mismo Día -->
+    <div class="col-lg-4">
+      <div class="card stats-card border-success shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-start mb-3">
+            <div>
+              <p class="stat-title text-success">
+                <i class="fas fa-calendar-check me-2"></i>Tratamientos Mismo Día
+              </p>
+              <h3 class="stat-value" *ngIf="tratamientosMismoDia">
+                {{ tratamientosMismoDia.totalTratamientos || 0 }}
+              </h3>
+              <h3 class="stat-value" *ngIf="!tratamientosMismoDia">--</h3>
+            </div>
+            <button class="btn btn-sm btn-success" (click)="cargarTratamientosMismoDia()">
+              <i class="fas fa-sync-alt"></i>
+            </button>
+          </div>
+          <p class="stat-description">
+            Iniciados el día de la consulta
+          </p>
+          <div *ngIf="tratamientosMismoDia" class="mt-3">
+            <small class="text-muted d-block">
+              {{ calcularPorcentaje(tratamientosMismoDia.totalTratamientos || 0, tratamientosMismoDia.totalConsultas || 1) }}% del total de consultas
+            </small>
+            <small class="text-muted d-block">Fecha: {{ fechaFin }}</small>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Personal y Recursos -->
+  <div *ngIf="!loading" class="row g-4 fade-in-up">
+    <div class="col-lg-12">
+      <div class="card shadow-sm">
+        <div class="card-header card-header-kpi">
+          <h5><i class="fas fa-users me-2"></i>Personal y Recursos</h5>
+        </div>
+        <div class="card-body">
+          <div class="row g-4">
+            <!-- Veterinarios -->
+            <div class="col-md-3">
+              <div class="text-center">
+                <div class="kpi-icon bg-primary-gradient mx-auto mb-3 icon-animated">
+                  <i class="fas fa-user-md"></i>
+                </div>
+                <h4 class="mb-1">{{ kpis.totalVeterinarios || 0 }}</h4>
+                <p class="text-muted mb-0">Veterinarios</p>
+              </div>
+            </div>
+
+            <!-- Técnicos -->
+            <div class="col-md-3">
+              <div class="text-center">
+                <div class="kpi-icon bg-info-gradient mx-auto mb-3 icon-animated">
+                  <i class="fas fa-user-nurse"></i>
+                </div>
+                <h4 class="mb-1">{{ kpis.totalTecnicos || 0 }}</h4>
+                <p class="text-muted mb-0">Técnicos</p>
+              </div>
+            </div>
+
+            <!-- Dueños -->
+            <div class="col-md-3">
+              <div class="text-center">
+                <div class="kpi-icon bg-success-gradient mx-auto mb-3 icon-animated">
+                  <i class="fas fa-users"></i>
+                </div>
+                <h4 class="mb-1">{{ kpis.totalDuenos || 0 }}</h4>
+                <p class="text-muted mb-0">Dueños Registrados</p>
+              </div>
+            </div>
+
+            <!-- Mascotas -->
+            <div class="col-md-3">
+              <div class="text-center">
+                <div class="kpi-icon bg-warning-gradient mx-auto mb-3 icon-animated">
+                  <i class="fas fa-paw"></i>
+                </div>
+                <h4 class="mb-1">{{ kpis.totalMascotas || 0 }}</h4>
+                <p class="text-muted mb-0">Mascotas Registradas</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

@@ -1,94 +1,231 @@
-
-// ===================================================
-// src/app/components/toma-muestra/toma-muestra-list.component.html
-// ===================================================
-/*
-<div class="container">
-  <div class="header">
-    <h2>🧪 Toma de Muestras</h2>
-    <button class="btn btn-primary" (click)="nueva()">➕ Nueva Toma</button>
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-syringe me-2"></i>Gestión de Toma de Muestras</h2>
+      <p class="text-muted">Registro y control de muestras veterinarias</p>
+      
+      <!-- Filtros activos -->
+      <div class="mt-2">
+        <div *ngIf="ordenSeleccionada" class="alert alert-info d-inline-flex align-items-center me-2">
+          <i class="fas fa-filter me-2"></i>
+          Orden: <strong class="ms-2">{{ ordenSeleccionada.tipoExamen }}</strong>
+          <button class="btn btn-sm btn-close ms-3" (click)="limpiarFiltros()"></button>
+        </div>
+        
+        <div *ngIf="tecnicoSeleccionado" class="alert alert-success d-inline-flex align-items-center">
+          <i class="fas fa-filter me-2"></i>
+          Técnico: <strong class="ms-2">{{ tecnicoSeleccionado.nombres }} {{ tecnicoSeleccionado.apellidos }}</strong>
+          <button class="btn btn-sm btn-close ms-3" (click)="limpiarFiltros()"></button>
+        </div>
+      </div>
+    </div>
+    <div>
+      <button class="btn btn-outline-primary me-2" (click)="obtenerPendientes()">
+        <i class="fas fa-clock me-2"></i>Ver Pendientes
+      </button>
+      <button class="btn btn-primary" (click)="nueva()">
+        <i class="fas fa-plus me-2"></i>Nueva Toma de Muestra
+      </button>
+    </div>
   </div>
 
-  <div class="alert alert-info" *ngIf="loading">
-    ⏳ Cargando tomas de muestra...
-  </div>
-
-  <div class="cards-grid" *ngIf="!loading && tomaMuestras.length > 0">
-    <div *ngFor="let toma of tomaMuestras" class="toma-card">
-      <div class="card-header">
-        <div class="codigo">{{ toma.codigoMuestra || 'Sin código' }}</div>
-        <span class="badge" [ngClass]="getEstadoClass(toma.estado)">
-          {{ toma.estado || 'PROGRAMADA' }}
-        </span>
+  <!-- Buscador y Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por código, tipo de muestra, técnico..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarBusqueda()" *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="btn-group">
+            <button class="btn btn-outline-success" (click)="exportarExcel()">
+              <i class="fas fa-file-excel me-1"></i>Excel
+            </button>
+            <button class="btn btn-outline-danger" (click)="exportarPDF()">
+              <i class="fas fa-file-pdf me-1"></i>PDF
+            </button>
+          </div>
+        </div>
       </div>
       
-      <div class="card-body">
-        <div class="info-row">
-          <strong>🔬 Tipo Muestra:</strong>
-          <span>{{ toma.tipoMuestra }}</span>
+      <!-- Filtro por estado -->
+      <div class="row mt-3">
+        <div class="col-12">
+          <div class="btn-group w-100" role="group">
+            <button *ngFor="let estado of estados" 
+                    class="btn" 
+                    [class.btn-primary]="filtroEstado === estado"
+                    [class.btn-outline-primary]="filtroEstado !== estado"
+                    (click)="cambiarFiltroEstado(estado)">
+              <i class="fas fa-circle me-1" [class]="'text-' + getColorEstado(estado)"></i>
+              {{ estado }}
+            </button>
+          </div>
         </div>
-        <div class="info-row">
-          <strong>📅 Fecha/Hora:</strong>
-          <span>{{ toma.fechaHora | date:'dd/MM/yyyy HH:mm' }}</span>
-        </div>
-        <div class="info-row" *ngIf="toma.metodoObtencion">
-          <strong>🧬 Método:</strong>
-          <span>{{ toma.metodoObtencion }}</span>
-        </div>
-        <div class="info-row" *ngIf="toma.volumenMuestra">
-          <strong>💧 Volumen:</strong>
-          <span>{{ toma.volumenMuestra }}</span>
-        </div>
-        <div class="info-row" *ngIf="toma.tecnico">
-          <strong>👨‍🔬 Técnico:</strong>
-          <span>{{ toma.tecnico.nombreCompleto || (toma.tecnico.nombres + ' ' + toma.tecnico.apellidos) }}</span>
-        </div>
-        <div class="info-row" *ngIf="toma.orden">
-          <strong>📋 Orden:</strong>
-          <span>#{{ toma.orden.idOrden }} - {{ toma.orden.tipoExamen }}</span>
-        </div>
-      </div>
-
-      <div class="card-actions">
-        <button (click)="eliminar(toma.idToma!)" class="btn btn-sm btn-danger">
-          🗑️ Eliminar
-        </button>
       </div>
     </div>
   </div>
 
-  <div class="alert alert-warning" *ngIf="!loading && tomaMuestras.length === 0">
-    📭 No hay tomas de muestra registradas. 
-    <button class="btn-link" (click)="nueva()">Crear la primera</button>
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">Cargando tomas de muestra...</p>
+  </div>
+
+  <!-- Tabla -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <!-- Sin resultados -->
+      <div *ngIf="tomasFiltradas.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron tomas de muestra</p>
+        <button class="btn btn-primary" (click)="nueva()">
+          <i class="fas fa-plus me-2"></i>Registrar Primera Toma de Muestra
+        </button>
+      </div>
+
+      <!-- Tabla de tomas -->
+      <div *ngIf="tomasFiltradas.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>Código</th>
+              <th>Fecha/Hora</th>
+              <th>Tipo Muestra</th>
+              <th>Orden</th>
+              <th>Técnico</th>
+              <th>Estado</th>
+              <th>Método</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let toma of tomasPaginadas">
+              <td>
+                <strong class="text-primary">{{ toma.codigoMuestra || 'Sin código' }}</strong>
+              </td>
+              <td>
+                <small>
+                  <i class="fas fa-calendar-alt text-muted me-1"></i>
+                  {{ formatearFechaHora(toma.fechaHora) }}
+                </small>
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="icono-muestra me-2">
+                    <i class="fas" [class]="getIconoTipoMuestra(toma.tipoMuestra)"></i>
+                  </div>
+                  <div>
+                    <strong>{{ toma.tipoMuestra }}</strong>
+                    <br>
+                    <small class="text-muted" *ngIf="toma.volumenMuestra">{{ toma.volumenMuestra }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div *ngIf="toma.orden">
+                  <a [routerLink]="['/ordenes/ver', toma.orden.idOrden]" class="text-decoration-none">
+                    {{ toma.orden.tipoExamen }}
+                  </a>
+                  <br>
+                  <small class="text-muted">{{ toma.orden.mascota?.nombre }}</small>
+                </div>
+                <span *ngIf="!toma.orden" class="text-muted">-</span>
+              </td>
+              <td>
+                <div *ngIf="toma.tecnico">
+                  <a [routerLink]="['/tecnicos/ver', toma.tecnico.idTecnico]" class="text-decoration-none">
+                    {{ toma.tecnico.nombres }} {{ toma.tecnico.apellidos }}
+                  </a>
+                  <br>
+                  <small class="text-muted">{{ toma.tecnico.especialidad }}</small>
+                </div>
+              </td>
+              <td>
+                <span class="badge" [class]="'bg-' + getColorEstado(toma.estado)">
+                  {{ toma.estado }}
+                </span>
+              </td>
+              <td>
+                <small>{{ toma.metodoObtencion || '-' }}</small>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" (click)="ver(toma.idToma!)" title="Ver detalles">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" (click)="editar(toma.idToma!)" title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  
+                  <!-- Dropdown para cambiar estado -->
+                  <div class="btn-group btn-group-sm" role="group">
+                    <button class="btn btn-outline-primary dropdown-toggle" 
+                            type="button" 
+                            data-bs-toggle="dropdown" 
+                            title="Cambiar estado">
+                      <i class="fas fa-sync-alt"></i>
+                    </button>
+                    <ul class="dropdown-menu">
+                      <li><a class="dropdown-item" (click)="cambiarEstado(toma, 'PROGRAMADA')">
+                        <i class="fas fa-circle text-info me-2"></i>Programada
+                      </a></li>
+                      <li><a class="dropdown-item" (click)="cambiarEstado(toma, 'REALIZADA')">
+                        <i class="fas fa-circle text-primary me-2"></i>Realizada
+                      </a></li>
+                      <li><a class="dropdown-item" (click)="cambiarEstado(toma, 'PROCESANDO')">
+                        <i class="fas fa-circle text-warning me-2"></i>Procesando
+                      </a></li>
+                      <li><a class="dropdown-item" (click)="cambiarEstado(toma, 'COMPLETADA')">
+                        <i class="fas fa-circle text-success me-2"></i>Completada
+                      </a></li>
+                    </ul>
+                  </div>
+                  
+                  <button class="btn btn-outline-danger" (click)="eliminar(toma)" title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <small class="text-muted">
+            Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+            {{ Math.min(paginaActual * itemsPorPagina, tomasFiltradas.length) }} 
+            de {{ tomasFiltradas.length }} registros
+          </small>
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   </div>
 </div>
-*/
-*/
-
-// ===================================================
-// src/app/components/toma-muestra/toma-muestra-list.component.css
-// ===================================================
-/*
-.container { padding: 2rem; }
-.header { display: flex; justify-content: space-between; margin-bottom: 2rem; }
-.btn { padding: 0.5rem 1rem; border-radius: 5px; border: none; cursor: pointer; font-weight: 600; }
-.btn-primary { background: #667eea; color: white; }
-.btn-danger { background: #fc8181; color: white; }
-.btn-sm { padding: 0.4rem 0.8rem; font-size: 0.875rem; }
-.btn-link { background: none; border: none; color: #667eea; cursor: pointer; text-decoration: underline; }
-.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(350px, 1fr)); gap: 1.5rem; }
-.toma-card { background: white; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); overflow: hidden; }
-.card-header { padding: 1rem; background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white; display: flex; justify-content: space-between; }
-.codigo { font-weight: bold; font-size: 1rem; }
-.badge { padding: 0.25rem 0.75rem; border-radius: 12px; font-size: 0.875rem; background: rgba(255,255,255,0.3); }
-.badge-programada { background: #fef3c7; color: #92400e; }
-.badge-realizada { background: #dbeafe; color: #1e40af; }
-.badge-completada { background: #d1fae5; color: #065f46; }
-.card-body { padding: 1.5rem; }
-.info-row { display: flex; justify-content: space-between; margin-bottom: 0.75rem; padding-bottom: 0.75rem; border-bottom: 1px solid #f1f1f1; }
-.info-row:last-child { border-bottom: none; }
-.card-actions { padding: 1rem; background: #f7fafc; display: flex; justify-content: flex-end; }
-.alert { padding: 1rem; border-radius: 8px; margin-bottom: 1rem; }
-.alert-info { background: #bee3f8; color: #2c5282; }
-.alert-warning { background: #feebc8; color: #7c2d12; }
-*/

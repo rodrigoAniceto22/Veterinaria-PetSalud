@@ -1,0 +1,89 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+  border-right: none;
+}
+
+.form-control,
+.form-select {
+  border-left: none;
+}
+
+.form-control:focus + .input-group-text,
+.form-select:focus + .input-group-text {
+  border-color: #667eea;
+}
+
+textarea.form-control {
+  resize: vertical;
+}
+
+.alert-info {
+  background-color: #e7f3ff;
+  border-color: #b3d9ff;
+  color: #004085;
+  font-size: 0.9rem;
+}
+
+.alert-info strong {
+  color: #003366;
+}
+
+input[type="datetime-local"] {
+  color: #495057;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  cursor: pointer;
+  filter: invert(0.5);
+}
+
+input[type="datetime-local"]:hover::-webkit-calendar-picker-indicator {
+  filter: invert(0.3);
+}
+
+.btn-outline-secondary:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.form-label {
+  font-weight: 500;
+  color: #495057;
+  margin-bottom: 0.5rem;
+}
+
+.text-danger {
+  color: #dc3545;
+}
+
+small.text-muted {
+  display: block;
+  margin-top: 0.25rem;
+  font-size: 0.85rem;
+}
+
+.breadcrumb {
+  background-color: transparent;
+  padding: 0;
+  margin-bottom: 0;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+  content: "›";
+  color: #6c757d;
+}

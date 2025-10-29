@@ -1,0 +1,151 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-users me-2"></i>Gestión de Dueños</h2>
+      <p class="text-muted">Lista de propietarios de mascotas</p>
+    </div>
+    <button class="btn btn-primary" (click)="nuevo()">
+      <i class="fas fa-plus me-2"></i>Nuevo Dueño
+    </button>
+  </div>
+
+  <!-- Buscador y Acciones -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por nombre, DNI o teléfono..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarBusqueda()" 
+                    *ngIf="searchTerm">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-6 text-end">
+          <div class="btn-group">
+            <button class="btn btn-outline-success" (click)="exportarExcel()">
+              <i class="fas fa-file-excel me-1"></i>Excel
+            </button>
+            <button class="btn btn-outline-danger" (click)="exportarPDF()">
+              <i class="fas fa-file-pdf me-1"></i>PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">Cargando dueños...</p>
+  </div>
+
+  <!-- Tabla de Dueños -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <!-- Sin resultados -->
+      <div *ngIf="duenosFiltrados.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron dueños</p>
+        <button class="btn btn-primary" (click)="nuevo()">
+          <i class="fas fa-plus me-2"></i>Registrar Primer Dueño
+        </button>
+      </div>
+
+      <!-- Tabla -->
+      <div *ngIf="duenosFiltrados.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>DNI</th>
+              <th>Nombre Completo</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Dirección</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let dueno of duenosPaginados">
+              <td><strong>{{ dueno.dni }}</strong></td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar-circle me-2">
+                    {{ dueno.nombres.charAt(0) }}{{ dueno.apellidos.charAt(0) }}
+                  </div>
+                  <div>
+                    {{ dueno.nombres }} {{ dueno.apellidos }}
+                  </div>
+                </div>
+              </td>
+              <td>
+                <i class="fas fa-phone text-primary me-1"></i>{{ dueno.telefono }}
+              </td>
+              <td>
+                <span *ngIf="dueno.email">
+                  <i class="fas fa-envelope text-info me-1"></i>{{ dueno.email }}
+                </span>
+                <span *ngIf="!dueno.email" class="text-muted">-</span>
+              </td>
+              <td>
+                <small>{{ dueno.direccion || '-' }}</small>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" (click)="ver(dueno.idDueno!)" 
+                          title="Ver detalles">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-primary" (click)="verMascotas(dueno.idDueno!)" 
+                          title="Ver mascotas">
+                    <i class="fas fa-dog"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" (click)="editar(dueno.idDueno!)" 
+                          title="Editar">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="eliminar(dueno)" 
+                          title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <small class="text-muted">
+            Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+            {{ Math.min(paginaActual * itemsPorPagina, duenosFiltrados.length) }} 
+            de {{ duenosFiltrados.length }} registros
+          </small>
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,4 +1,3 @@
-// src/app/models/dueno.model.ts
 export interface Dueno {
   idDueno?: number;
   dni: string;
@@ -7,4 +6,6 @@ export interface Dueno {
   telefono: string;
   email?: string;
   direccion?: string;
+  mascotas?: any[];
+  facturas?: any[];
 }

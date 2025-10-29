@@ -1,0 +1,64 @@
+.icon-circle {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  font-size: 24px;
+}
+
+.table tbody tr {
+  transition: background-color 0.2s;
+}
+
+.table tbody tr:hover {
+  background-color: #f8f9fa;
+}
+
+.btn-group-sm .btn {
+  padding: 0.25rem 0.5rem;
+}
+
+.page-link {
+  cursor: pointer;
+}
+
+.badge {
+  font-size: 0.75rem;
+  padding: 0.35em 0.65em;
+}
+
+.card {
+  border-radius: 10px;
+}
+
+.card-body {
+  padding: 1.5rem;
+}
+
+.border-warning {
+  border-left: 4px solid #ffc107 !important;
+}
+
+.border-info {
+  border-left: 4px solid #0dcaf0 !important;
+}
+
+.border-success {
+  border-left: 4px solid #198754 !important;
+}
+
+.border-danger {
+  border-left: 4px solid #dc3545 !important;
+}
+
+.btn-group .btn {
+  transition: all 0.2s;
+}
+
+.btn-group .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}

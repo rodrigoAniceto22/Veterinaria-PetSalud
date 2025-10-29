@@ -1,0 +1,243 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>
+        <i class="fas fa-file-medical me-2"></i>
+        <span *ngIf="!modoEdicion && !modoVista">Nueva Orden Veterinaria</span>
+        <span *ngIf="modoEdicion">Editar Orden</span>
+        <span *ngIf="modoVista">Detalles de la Orden</span>
+      </h2>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a routerLink="/ordenes">Órdenes</a></li>
+          <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : (modoVista ? 'Ver' : 'Nueva') }}</li>
+        </ol>
+      </nav>
+    </div>
+    <button class="btn btn-outline-secondary" (click)="volver()">
+      <i class="fas fa-arrow-left me-2"></i>Volver
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3">Cargando información...</p>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="!loading" class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-file-medical me-2"></i>Información de la Orden
+          </h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="ordenForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Fecha y Prioridad -->
+            <div class="row mb-3">
+              <div class="col-md-4">
+                <label for="fechaOrden" class="form-label">Fecha <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-calendar"></i></span>
+                  <input type="date" class="form-control" id="fechaOrden" formControlName="fechaOrden"
+                         [class.is-invalid]="fechaOrden?.invalid && fechaOrden?.touched"
+                         [class.is-valid]="fechaOrden?.valid && fechaOrden?.touched">
+                  <div class="invalid-feedback" *ngIf="fechaOrden?.invalid && fechaOrden?.touched">
+                    La fecha es requerida
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="prioridad" class="form-label">Prioridad <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-exclamation-circle"></i></span>
+                  <select class="form-select" id="prioridad" formControlName="prioridad"
+                          [class.is-invalid]="prioridad?.invalid && prioridad?.touched"
+                          [class.is-valid]="prioridad?.valid && prioridad?.touched">
+                    <option value="" disabled>Seleccione prioridad</option>
+                    <option *ngFor="let p of prioridades" [value]="p">{{ p }}</option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="prioridad?.invalid && prioridad?.touched">
+                    La prioridad es requerida
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-4">
+                <label for="estado" class="form-label">Estado <span class="text-danger">*</span></label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-info-circle"></i></span>
+                  <select class="form-select" id="estado" formControlName="estado"
+                          [class.is-invalid]="estado?.invalid && estado?.touched"
+                          [class.is-valid]="estado?.valid && estado?.touched">
+                    <option value="" disabled>Seleccione estado</option>
+                    <option *ngFor="let e of estados" [value]="e">{{ e.replace('_', ' ') }}</option>
+                  </select>
+                  <div class="invalid-feedback" *ngIf="estado?.invalid && estado?.touched">
+                    El estado es requerido
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Tipo de Examen -->
+            <div class="mb-3">
+              <label for="tipoExamen" class="form-label">Tipo de Examen <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-flask"></i></span>
+                <select class="form-select" id="tipoExamen" formControlName="tipoExamen"
+                        [class.is-invalid]="tipoExamen?.invalid && tipoExamen?.touched"
+                        [class.is-valid]="tipoExamen?.valid && tipoExamen?.touched">
+                  <option value="" disabled>Seleccione tipo de examen</option>
+                  <option *ngFor="let tipo of tiposExamen" [value]="tipo">{{ tipo }}</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="tipoExamen?.invalid && tipoExamen?.touched">
+                  El tipo de examen es requerido
+                </div>
+              </div>
+            </div>
+
+            <!-- Mascota -->
+            <div class="mb-3">
+              <label for="idMascota" class="form-label">Mascota <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-paw"></i></span>
+                <select class="form-select" id="idMascota" formControlName="idMascota"
+                        [class.is-invalid]="idMascota?.invalid && idMascota?.touched"
+                        [class.is-valid]="idMascota?.valid && idMascota?.touched">
+                  <option value="" disabled>Seleccione mascota</option>
+                  <option *ngFor="let mascota of mascotas" [value]="mascota.idMascota">
+                    {{ mascota.nombre }} - {{ mascota.especie }} ({{ mascota.dueno?.nombres }})
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="idMascota?.invalid && idMascota?.touched">
+                  Debe seleccionar una mascota
+                </div>
+              </div>
+              <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Seleccione la mascota que será examinada
+              </small>
+            </div>
+
+            <!-- Veterinario -->
+            <div class="mb-3">
+              <label for="idVeterinario" class="form-label">Veterinario <span class="text-danger">*</span></label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user-md"></i></span>
+                <select class="form-select" id="idVeterinario" formControlName="idVeterinario"
+                        [class.is-invalid]="idVeterinario?.invalid && idVeterinario?.touched"
+                        [class.is-valid]="idVeterinario?.valid && idVeterinario?.touched">
+                  <option value="" disabled>Seleccione veterinario</option>
+                  <option *ngFor="let vet of veterinarios" [value]="vet.idVeterinario">
+                    Dr. {{ vet.nombres }} {{ vet.apellidos }} - {{ vet.especialidad }}
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="idVeterinario?.invalid && idVeterinario?.touched">
+                  Debe seleccionar un veterinario
+                </div>
+              </div>
+              <small class="text-muted">
+                <i class="fas fa-info-circle me-1"></i>
+                Veterinario responsable de la orden
+              </small>
+            </div>
+
+            <!-- Síntomas -->
+            <div class="mb-3">
+              <label for="sintomas" class="form-label">Síntomas</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-notes-medical"></i></span>
+                <textarea class="form-control" id="sintomas" formControlName="sintomas"
+                          rows="2" placeholder="Describa los síntomas observados"></textarea>
+              </div>
+              <small class="text-muted">Opcional - Síntomas que presenta la mascota</small>
+            </div>
+
+            <!-- Diagnóstico Presuntivo -->
+            <div class="mb-3">
+              <label for="diagnosticoPresuntivo" class="form-label">Diagnóstico Presuntivo</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-diagnoses"></i></span>
+                <textarea class="form-control" id="diagnosticoPresuntivo" formControlName="diagnosticoPresuntivo"
+                          rows="2" placeholder="Diagnóstico inicial o presuntivo"></textarea>
+              </div>
+              <small class="text-muted">Opcional - Diagnóstico preliminar del veterinario</small>
+            </div>
+
+            <!-- Observaciones -->
+            <div class="mb-3">
+              <label for="observaciones" class="form-label">Observaciones</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-comment"></i></span>
+                <textarea class="form-control" id="observaciones" formControlName="observaciones"
+                          rows="3" placeholder="Observaciones adicionales"></textarea>
+              </div>
+              <small class="text-muted">Opcional - Notas o comentarios adicionales</small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-secondary" (click)="volver()">
+                <i class="fas fa-times me-2"></i>Cancelar
+              </button>
+              
+              <button *ngIf="modoVista" type="button" class="btn btn-warning" (click)="editar()">
+                <i class="fas fa-edit me-2"></i>Editar
+              </button>
+
+              <button *ngIf="modoVista && ordenId" type="button" class="btn btn-info" (click)="programarTomaMuestra()">
+                <i class="fas fa-syringe me-2"></i>Programar Toma de Muestra
+              </button>
+
+              <button *ngIf="!modoVista" type="submit" class="btn btn-primary" 
+                      [disabled]="guardando || ordenForm.invalid">
+                <span *ngIf="!guardando">
+                  <i class="fas fa-save me-2"></i>{{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+                </span>
+                <span *ngIf="guardando">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Información adicional en modo vista -->
+      <div *ngIf="modoVista" class="card shadow-sm mt-3">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Acciones Disponibles</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-2">
+                <i class="fas fa-syringe me-2 text-primary"></i>
+                <a class="text-decoration-none" style="cursor: pointer;" (click)="programarTomaMuestra()">
+                  Programar/Ver Toma de Muestra
+                </a>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-2">
+                <i class="fas fa-clipboard-check me-2 text-success"></i>
+                <a class="text-decoration-none" style="cursor: pointer;" (click)="verResultados()">
+                  Ver Resultados de la Orden
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

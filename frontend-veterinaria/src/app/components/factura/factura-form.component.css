@@ -1,0 +1,44 @@
+.card {
+  border-radius: 10px;
+}
+
+.card-header {
+  border-radius: 10px 10px 0 0 !important;
+}
+
+.detalle-item {
+  background-color: #f8f9fa;
+  transition: all 0.3s;
+}
+
+.detalle-item:hover {
+  background-color: #e9ecef;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.sticky-top {
+  position: sticky;
+  z-index: 100;
+}
+
+.form-control:focus,
+.form-select:focus {
+  border-color: #667eea;
+  box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.input-group-text {
+  background-color: #f8f9fa;
+}
+
+hr {
+  border-top: 2px solid #dee2e6;
+}
+
+.btn-group .btn {
+  margin-right: 0.5rem;
+}
+
+.btn-group .btn:last-child {
+  margin-right: 0;
+}

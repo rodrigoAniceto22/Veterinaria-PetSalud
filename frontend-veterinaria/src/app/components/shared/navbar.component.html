@@ -1,0 +1,52 @@
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow-sm">
+  <div class="container-fluid">
+    <a class="navbar-brand d-flex align-items-center" routerLink="/dashboard">
+      <i class="fas fa-paw me-2"></i>
+      <span class="fw-bold">PetSalud</span>
+    </a>
+
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarContent">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarContent">
+      <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/dashboard" routerLinkActive="active">
+            <i class="fas fa-home me-1"></i> Dashboard
+          </a>
+        </li>
+      </ul>
+
+      <form class="d-flex me-3">
+        <input class="form-control form-control-sm" type="search" placeholder="Buscar..." aria-label="Buscar">
+      </form>
+
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown me-2">
+          <a class="nav-link position-relative" href="#" (click)="mostrarNotificaciones()" style="cursor: pointer;">
+            <i class="fas fa-bell"></i>
+            <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">3</span>
+          </a>
+        </li>
+
+        <li class="nav-item dropdown" *ngIf="usuarioActual">
+          <a class="nav-link dropdown-toggle d-flex align-items-center" href="#" id="userDropdown" 
+             role="button" data-bs-toggle="dropdown">
+            <i class="fas fa-user-circle me-2"></i>
+            <span>{{ nombreUsuario }}</span>
+            <span class="badge bg-light text-primary ms-2">{{ rolUsuario }}</span>
+          </a>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <li><a class="dropdown-item" (click)="irAPerfil()"><i class="fas fa-user me-2"></i>Mi Perfil</a></li>
+            <li><a class="dropdown-item" routerLink="/configuracion"><i class="fas fa-cog me-2"></i>Configuración</a></li>
+            <li><hr class="dropdown-divider"></li>
+            <li><a class="dropdown-item text-danger" (click)="cerrarSesion()" style="cursor: pointer;">
+              <i class="fas fa-sign-out-alt me-2"></i>Cerrar Sesión
+            </a></li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>

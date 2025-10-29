@@ -1,6 +1,3 @@
-// ===================================================
-// src/app/models/detalle-factura.model.ts
-// ===================================================
 export interface DetalleFactura {
   idDetalle?: number;
   descripcion: string;
@@ -8,5 +5,5 @@ export interface DetalleFactura {
   precioUnitario: number;
   subtotal: number;
   tipoServicio?: string;
-  idFactura?: number;
+  factura?: any;
 }

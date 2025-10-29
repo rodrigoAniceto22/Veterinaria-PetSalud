@@ -1,109 +1,255 @@
-
-// ===================================================
-// src/app/components/orden/orden-form.component.html
-// ===================================================
-/*
-<div class="container">
-  <div class="header">
-    <h2>📋 Nueva Orden Veterinaria</h2>
-    <button class="btn btn-secondary" (click)="volver()">← Volver</button>
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2><i class="fas fa-file-medical me-2"></i>Órdenes Veterinarias</h2>
+      <p class="text-muted">Gestión de órdenes de exámenes y análisis</p>
+    </div>
+    <button class="btn btn-primary" (click)="nueva()">
+      <i class="fas fa-plus me-2"></i>Nueva Orden
+    </button>
   </div>
 
-  <div class="card">
-    <form [formGroup]="ordenForm" (ngSubmit)="onSubmit()">
-      <div class="form-grid">
-        
-        <div class="form-group">
-          <label>Mascota *</label>
-          <select formControlName="idMascota" class="form-control">
-            <option value="">Seleccione mascota...</option>
-            <option *ngFor="let mascota of mascotas" [value]="mascota.idMascota">
-              {{ mascota.nombre }} - {{ mascota.especie }} 
-              (Dueño: {{ mascota.dueno?.nombres }} {{ mascota.dueno?.apellidos }})
-            </option>
-          </select>
-          <div class="error" *ngIf="ordenForm.get('idMascota')?.invalid && ordenForm.get('idMascota')?.touched">
-            Mascota es requerida
+  <!-- Tarjetas de Estadísticas -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card border-warning shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Pendientes</h6>
+              <h3 class="mb-0">{{ estadisticas.pendientes }}</h3>
+            </div>
+            <div class="icon-circle bg-warning">
+              <i class="fas fa-clock"></i>
+            </div>
           </div>
         </div>
-
-        <div class="form-group">
-          <label>Veterinario *</label>
-          <select formControlName="idVeterinario" class="form-control">
-            <option value="">Seleccione veterinario...</option>
-            <option *ngFor="let vet of veterinarios" [value]="vet.idVeterinario">
-              {{ vet.nombreCompleto || (vet.nombres + ' ' + vet.apellidos) }}
-              {{ vet.especialidad ? '- ' + vet.especialidad : '' }}
-            </option>
-          </select>
-          <div class="error" *ngIf="ordenForm.get('idVeterinario')?.invalid && ordenForm.get('idVeterinario')?.touched">
-            Veterinario es requerido
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Tipo de Examen *</label>
-          <select formControlName="tipoExamen" class="form-control">
-            <option value="">Seleccione tipo...</option>
-            <option *ngFor="let tipo of tiposExamen" [value]="tipo">
-              {{ tipo.replace('_', ' ') }}
-            </option>
-          </select>
-          <div class="error" *ngIf="ordenForm.get('tipoExamen')?.invalid && ordenForm.get('tipoExamen')?.touched">
-            Tipo de examen es requerido
-          </div>
-        </div>
-
-        <div class="form-group">
-          <label>Fecha de Orden *</label>
-          <input type="date" formControlName="fechaOrden" class="form-control">
-        </div>
-
-        <div class="form-group">
-          <label>Prioridad *</label>
-          <select formControlName="prioridad" class="form-control">
-            <option *ngFor="let prioridad of prioridades" [value]="prioridad">
-              {{ prioridad }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group">
-          <label>Estado</label>
-          <select formControlName="estado" class="form-control">
-            <option *ngFor="let estado of estados" [value]="estado">
-              {{ estado.replace('_', ' ') }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-group full-width">
-          <label>Síntomas</label>
-          <textarea formControlName="sintomas" class="form-control" rows="3" 
-                    placeholder="Describa los síntomas observados..."></textarea>
-        </div>
-
-        <div class="form-group full-width">
-          <label>Diagnóstico Presuntivo</label>
-          <textarea formControlName="diagnosticoPresuntivo" class="form-control" rows="3"
-                    placeholder="Diagnóstico preliminar..."></textarea>
-        </div>
-
-        <div class="form-group full-width">
-          <label>Observaciones</label>
-          <textarea formControlName="observaciones" class="form-control" rows="3"
-                    placeholder="Observaciones adicionales..."></textarea>
-        </div>
-
       </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-info shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">En Proceso</h6>
+              <h3 class="mb-0">{{ estadisticas.enProceso }}</h3>
+            </div>
+            <div class="icon-circle bg-info">
+              <i class="fas fa-spinner"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-success shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Completadas</h6>
+              <h3 class="mb-0">{{ estadisticas.completadas }}</h3>
+            </div>
+            <div class="icon-circle bg-success">
+              <i class="fas fa-check-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card border-danger shadow-sm">
+        <div class="card-body">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h6 class="text-muted mb-1">Canceladas</h6>
+              <h3 class="mb-0">{{ estadisticas.canceladas }}</h3>
+            </div>
+            <div class="icon-circle bg-danger">
+              <i class="fas fa-times-circle"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-      <div class="form-actions">
-        <button type="submit" class="btn btn-primary" [disabled]="!ordenForm.valid || loading">
-          {{ loading ? '⏳ Creando...' : '💾 Crear Orden' }}
+  <!-- Buscador y Filtros -->
+  <div class="card shadow-sm mb-4">
+    <div class="card-body">
+      <div class="row g-3">
+        <div class="col-md-6">
+          <div class="input-group">
+            <span class="input-group-text"><i class="fas fa-search"></i></span>
+            <input type="text" class="form-control" placeholder="Buscar por ID, tipo de examen, mascota..." 
+                   [(ngModel)]="searchTerm" (keyup)="buscar()">
+            <button class="btn btn-outline-secondary" type="button" (click)="limpiarBusqueda()" 
+                    *ngIf="searchTerm || filtroEstado !== 'TODOS'">
+              <i class="fas fa-times"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-4">
+          <div class="btn-group w-100" role="group">
+            <button type="button" class="btn" [class.btn-primary]="filtroEstado === 'TODOS'" 
+                    [class.btn-outline-primary]="filtroEstado !== 'TODOS'"
+                    (click)="filtrarPorEstado('TODOS')">
+              Todos
+            </button>
+            <button type="button" class="btn" [class.btn-warning]="filtroEstado === 'PENDIENTE'" 
+                    [class.btn-outline-warning]="filtroEstado !== 'PENDIENTE'"
+                    (click)="filtrarPorEstado('PENDIENTE')">
+              Pendientes
+            </button>
+            <button type="button" class="btn" [class.btn-info]="filtroEstado === 'EN_PROCESO'" 
+                    [class.btn-outline-info]="filtroEstado !== 'EN_PROCESO'"
+                    (click)="filtrarPorEstado('EN_PROCESO')">
+              En Proceso
+            </button>
+            <button type="button" class="btn" [class.btn-success]="filtroEstado === 'COMPLETADA'" 
+                    [class.btn-outline-success]="filtroEstado !== 'COMPLETADA'"
+                    (click)="filtrarPorEstado('COMPLETADA')">
+              Completadas
+            </button>
+          </div>
+        </div>
+        <div class="col-md-2 text-end">
+          <div class="btn-group">
+            <button class="btn btn-outline-success" (click)="exportarExcel()">
+              <i class="fas fa-file-excel me-1"></i>Excel
+            </button>
+            <button class="btn btn-outline-danger" (click)="exportarPDF()">
+              <i class="fas fa-file-pdf me-1"></i>PDF
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary" role="status"></div>
+    <p class="mt-3">Cargando órdenes...</p>
+  </div>
+
+  <!-- Tabla de Órdenes -->
+  <div *ngIf="!loading" class="card shadow-sm">
+    <div class="card-body">
+      
+      <!-- Sin resultados -->
+      <div *ngIf="ordenesFiltradas.length === 0" class="text-center py-5">
+        <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+        <p class="text-muted">No se encontraron órdenes</p>
+        <button class="btn btn-primary" (click)="nueva()">
+          <i class="fas fa-plus me-2"></i>Crear Primera Orden
         </button>
-        <button type="button" class="btn btn-secondary" (click)="volver()">Cancelar</button>
       </div>
-    </form>
+
+      <!-- Tabla -->
+      <div *ngIf="ordenesFiltradas.length > 0" class="table-responsive">
+        <table class="table table-hover align-middle">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Fecha</th>
+              <th>Tipo de Examen</th>
+              <th>Mascota</th>
+              <th>Veterinario</th>
+              <th>Prioridad</th>
+              <th>Estado</th>
+              <th class="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let orden of ordenesPaginadas">
+              <td><strong>#{{ orden.idOrden }}</strong></td>
+              <td>
+                <small>{{ orden.fechaOrden | date: 'dd/MM/yyyy' }}</small>
+              </td>
+              <td>
+                <i class="fas fa-flask text-primary me-1"></i>
+                {{ orden.tipoExamen }}
+              </td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <i class="fas fa-paw me-2 text-info"></i>
+                  <div>
+                    <div>{{ orden.mascota?.nombre }}</div>
+                    <small class="text-muted">{{ orden.mascota?.especie }}</small>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <small>
+                  Dr. {{ orden.veterinario?.nombres }} {{ orden.veterinario?.apellidos }}
+                </small>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getPrioridadBadgeClass(orden.prioridad!)">
+                  {{ orden.prioridad }}
+                </span>
+              </td>
+              <td>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(orden.estado!)">
+                  {{ orden.estado?.replace('_', ' ') }}
+                </span>
+              </td>
+              <td class="text-center">
+                <div class="btn-group btn-group-sm">
+                  <button class="btn btn-outline-info" (click)="ver(orden.idOrden!)" 
+                          title="Ver detalles">
+                    <i class="fas fa-eye"></i>
+                  </button>
+                  <button class="btn btn-outline-success" (click)="verTomaMuestra(orden.idOrden!)" 
+                          title="Toma de muestra">
+                    <i class="fas fa-syringe"></i>
+                  </button>
+                  <button class="btn btn-outline-primary" (click)="verResultados(orden.idOrden!)" 
+                          title="Resultados">
+                    <i class="fas fa-clipboard-check"></i>
+                  </button>
+                  <button class="btn btn-outline-warning" (click)="editar(orden.idOrden!)" 
+                          title="Editar"
+                          [disabled]="orden.estado === 'COMPLETADA' || orden.estado === 'CANCELADA'">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                  <button class="btn btn-outline-danger" (click)="eliminar(orden)" 
+                          title="Eliminar">
+                    <i class="fas fa-trash"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Paginación -->
+      <div *ngIf="totalPaginas > 1" class="d-flex justify-content-between align-items-center mt-3">
+        <div>
+          <small class="text-muted">
+            Mostrando {{ (paginaActual - 1) * itemsPorPagina + 1 }} - 
+            {{ Math.min(paginaActual * itemsPorPagina, ordenesFiltradas.length) }} 
+            de {{ ordenesFiltradas.length }} registros
+          </small>
+        </div>
+        <nav>
+          <ul class="pagination pagination-sm mb-0">
+            <li class="page-item" [class.disabled]="paginaActual === 1">
+              <a class="page-link" (click)="cambiarPagina(paginaActual - 1)">Anterior</a>
+            </li>
+            <li class="page-item" *ngFor="let pagina of getNumeroPaginas()" 
+                [class.active]="pagina === paginaActual">
+              <a class="page-link" (click)="cambiarPagina(pagina)">{{ pagina }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="paginaActual === totalPaginas">
+              <a class="page-link" (click)="cambiarPagina(paginaActual + 1)">Siguiente</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
   </div>
 </div>
-*/

@@ -1,0 +1,251 @@
+<div class="container-fluid py-4">
+  
+  <!-- Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2>
+        <i class="fas fa-file-medical-alt me-2"></i>
+        <span *ngIf="!modoEdicion && !modoVista">Nuevo Resultado</span>
+        <span *ngIf="modoEdicion">Editar Resultado</span>
+        <span *ngIf="modoVista">Detalles del Resultado</span>
+      </h2>
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item"><a routerLink="/dashboard">Dashboard</a></li>
+          <li class="breadcrumb-item"><a routerLink="/resultados">Resultados</a></li>
+          <li class="breadcrumb-item active">{{ modoEdicion ? 'Editar' : (modoVista ? 'Ver' : 'Nuevo') }}</li>
+        </ol>
+      </nav>
+    </div>
+    <button class="btn btn-outline-secondary" (click)="volver()">
+      <i class="fas fa-arrow-left me-2"></i>Volver
+    </button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="text-center py-5">
+    <div class="spinner-border text-primary"></div>
+    <p class="mt-3">Cargando información...</p>
+  </div>
+
+  <!-- Formulario -->
+  <div *ngIf="!loading" class="row">
+    <div class="col-lg-10 mx-auto">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h5 class="mb-0">
+            <i class="fas fa-clipboard-check me-2"></i>Información del Resultado
+          </h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="resultadoForm" (ngSubmit)="onSubmit()">
+            
+            <!-- Orden -->
+            <div class="mb-3">
+              <label for="orden" class="form-label">
+                Orden Veterinaria <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-file-prescription"></i></span>
+                <select class="form-select" id="orden" formControlName="orden"
+                        [class.is-invalid]="orden?.invalid && orden?.touched"
+                        [class.is-valid]="orden?.valid && orden?.touched">
+                  <option value="">Seleccione una orden</option>
+                  <option *ngFor="let o of ordenes" [value]="o.idOrden">
+                    Orden #{{ o.idOrden }} - {{ o.tipoExamen }} 
+                    ({{ o.mascota?.nombre }} - {{ o.fechaOrden | date:'dd/MM/yyyy' }})
+                  </option>
+                </select>
+                <div class="invalid-feedback" *ngIf="orden?.invalid && orden?.touched">
+                  Debe seleccionar una orden
+                </div>
+              </div>
+            </div>
+
+            <!-- Descripción -->
+            <div class="mb-3">
+              <label for="descripcion" class="form-label">
+                Descripción del Análisis <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-align-left"></i></span>
+                <textarea class="form-control" id="descripcion" formControlName="descripcion"
+                          rows="3" 
+                          placeholder="Descripción detallada del análisis realizado..."
+                          [class.is-invalid]="descripcion?.invalid && descripcion?.touched"
+                          [class.is-valid]="descripcion?.valid && descripcion?.touched"></textarea>
+                <div class="invalid-feedback" *ngIf="descripcion?.invalid && descripcion?.touched">
+                  <span *ngIf="descripcion?.errors?.['required']">La descripción es requerida</span>
+                  <span *ngIf="descripcion?.errors?.['maxlength']">Máximo 1000 caracteres</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Valores y Valores de Referencia -->
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="valores" class="form-label">
+                  Valores Obtenidos <span class="text-danger">*</span>
+                </label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-vial"></i></span>
+                  <textarea class="form-control" id="valores" formControlName="valores"
+                            rows="4" 
+                            placeholder="Ej: Hemoglobina: 15.2 g/dL&#10;Leucocitos: 8,500/μL&#10;Plaquetas: 250,000/μL"
+                            [class.is-invalid]="valores?.invalid && valores?.touched"
+                            [class.is-valid]="valores?.valid && valores?.touched"></textarea>
+                  <div class="invalid-feedback" *ngIf="valores?.invalid && valores?.touched">
+                    Los valores son requeridos
+                  </div>
+                </div>
+              </div>
+
+              <div class="col-md-6">
+                <label for="valoresReferencia" class="form-label">Valores de Referencia</label>
+                <div class="input-group">
+                  <span class="input-group-text"><i class="fas fa-ruler"></i></span>
+                  <textarea class="form-control" id="valoresReferencia" formControlName="valoresReferencia"
+                            rows="4" 
+                            placeholder="Ej: Hemoglobina: 12-18 g/dL&#10;Leucocitos: 6,000-12,000/μL&#10;Plaquetas: 200,000-500,000/μL"></textarea>
+                </div>
+                <small class="text-muted">Opcional - Rangos normales para comparación</small>
+              </div>
+            </div>
+
+            <!-- Conclusiones -->
+            <div class="mb-3">
+              <label for="conclusiones" class="form-label">
+                Conclusiones <span class="text-danger">*</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-stethoscope"></i></span>
+                <textarea class="form-control" id="conclusiones" formControlName="conclusiones"
+                          rows="3" 
+                          placeholder="Conclusiones e interpretación de los resultados..."
+                          [class.is-invalid]="conclusiones?.invalid && conclusiones?.touched"
+                          [class.is-valid]="conclusiones?.valid && conclusiones?.touched"></textarea>
+                <div class="invalid-feedback" *ngIf="conclusiones?.invalid && conclusiones?.touched">
+                  Las conclusiones son requeridas
+                </div>
+              </div>
+            </div>
+
+            <!-- Recomendaciones -->
+            <div class="mb-3">
+              <label for="recomendaciones" class="form-label">Recomendaciones</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-prescription"></i></span>
+                <textarea class="form-control" id="recomendaciones" formControlName="recomendaciones"
+                          rows="3" 
+                          placeholder="Recomendaciones de tratamiento o seguimiento..."></textarea>
+              </div>
+              <small class="text-muted">Opcional</small>
+            </div>
+
+            <!-- Método de Análisis -->
+            <div class="mb-3">
+              <label for="metodoAnalisis" class="form-label">Método de Análisis</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-microscope"></i></span>
+                <input type="text" class="form-control" id="metodoAnalisis" 
+                       formControlName="metodoAnalisis"
+                       placeholder="Ej: Fotometría, PCR, Cultivo bacteriano..."
+                       [class.is-invalid]="metodoAnalisis?.invalid && metodoAnalisis?.touched">
+                <div class="invalid-feedback" *ngIf="metodoAnalisis?.invalid && metodoAnalisis?.touched">
+                  <span *ngIf="metodoAnalisis?.errors?.['maxlength']">Máximo 200 caracteres</span>
+                </div>
+              </div>
+              <small class="text-muted">Opcional</small>
+            </div>
+
+            <!-- Observaciones Técnicas -->
+            <div class="mb-3">
+              <label for="observacionesTecnicas" class="form-label">Observaciones Técnicas</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-notes-medical"></i></span>
+                <textarea class="form-control" id="observacionesTecnicas" 
+                          formControlName="observacionesTecnicas"
+                          rows="2" 
+                          placeholder="Observaciones del técnico durante el análisis..."></textarea>
+              </div>
+              <small class="text-muted">Opcional - Notas internas del técnico</small>
+            </div>
+
+            <!-- Botones -->
+            <div class="d-flex justify-content-end gap-2 mt-4">
+              <button type="button" class="btn btn-secondary" (click)="volver()">
+                <i class="fas fa-times me-2"></i>Cancelar
+              </button>
+              
+              <button *ngIf="modoVista" type="button" class="btn btn-warning" (click)="editar()">
+                <i class="fas fa-edit me-2"></i>Editar
+              </button>
+
+              <button *ngIf="modoVista" type="button" class="btn btn-success" (click)="validar()">
+                <i class="fas fa-check me-2"></i>Validar Resultado
+              </button>
+
+              <button *ngIf="modoVista" type="button" class="btn btn-danger" (click)="descargarPDF()">
+                <i class="fas fa-file-pdf me-2"></i>Descargar PDF
+              </button>
+
+              <button *ngIf="!modoVista" type="submit" class="btn btn-primary" 
+                      [disabled]="guardando || resultadoForm.invalid">
+                <span *ngIf="!guardando">
+                  <i class="fas fa-save me-2"></i>{{ modoEdicion ? 'Actualizar' : 'Guardar' }}
+                </span>
+                <span *ngIf="guardando">
+                  <span class="spinner-border spinner-border-sm me-2"></span>Guardando...
+                </span>
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Información adicional (solo en modo vista) -->
+      <div *ngIf="modoVista" class="card shadow-sm mt-3">
+        <div class="card-header bg-info text-white">
+          <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Información Adicional</h5>
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <div class="col-md-6">
+              <p class="mb-2">
+                <i class="fas fa-calendar me-2 text-primary"></i>
+                <strong>Fecha de Resultado:</strong> 
+                {{ resultadoForm.value.fechaResultado | date:'dd/MM/yyyy HH:mm' }}
+              </p>
+              <p class="mb-2">
+                <i class="fas fa-check-circle me-2 text-success"></i>
+                <strong>Estado de Validación:</strong> 
+                <span class="badge bg-warning" *ngIf="!resultadoForm.value.validado">Pendiente</span>
+                <span class="badge bg-success" *ngIf="resultadoForm.value.validado">Validado</span>
+              </p>
+            </div>
+            <div class="col-md-6">
+              <p class="mb-2">
+                <i class="fas fa-hand-holding me-2 text-info"></i>
+                <strong>Estado de Entrega:</strong> 
+                <span class="badge bg-secondary" *ngIf="!resultadoForm.value.entregado">No Entregado</span>
+                <span class="badge bg-success" *ngIf="resultadoForm.value.entregado">Entregado</span>
+              </p>
+              <p class="mb-0">
+                <i class="fas fa-file-prescription me-2 text-warning"></i>
+                <a [routerLink]="['/ordenes/ver', resultadoForm.value.orden]" class="text-decoration-none">
+                  Ver detalles de la orden
+                </a>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Alerta de advertencia -->
+      <div *ngIf="!modoVista" class="alert alert-warning mt-3" role="alert">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        <strong>Importante:</strong> Una vez validado el resultado, no podrá ser editado ni eliminado.
+      </div>
+    </div>
+  </div>
+</div>

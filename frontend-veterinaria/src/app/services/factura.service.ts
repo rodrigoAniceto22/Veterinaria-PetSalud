@@ -1,53 +1,65 @@
-
-// ===================================================
-// src/app/services/factura.service.ts
-// ===================================================
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { environment } from '../../environments/environment';
 import { Factura } from '../models/factura.model';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FacturaService {
-  private apiUrl = `${environment.apiUrl}/facturas`;
-  private headers = new HttpHeaders({
-    'Content-Type': 'application/json'
-  });
+  private apiUrl = 'http://localhost:8080/api/facturas';
 
   constructor(private http: HttpClient) {}
 
-  getAll(): Observable<Factura[]> {
-    return this.http.get<Factura[]>(this.apiUrl, { headers: this.headers });
+  listarTodas(): Observable<Factura[]> {
+    return this.http.get<Factura[]>(this.apiUrl);
   }
 
-  getById(id: number): Observable<Factura> {
-    return this.http.get<Factura>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  obtenerPorId(id: number): Observable<Factura> {
+    return this.http.get<Factura>(`${this.apiUrl}/${id}`);
   }
 
-  getPendientes(): Observable<Factura[]> {
-    return this.http.get<Factura[]>(`${this.apiUrl}/pendientes`, { headers: this.headers });
+  buscarPorDueno(idDueno: number): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/dueno/${idDueno}`);
   }
 
-  getByDueno(idDueno: number): Observable<Factura[]> {
-    return this.http.get<Factura[]>(`${this.apiUrl}/dueno/${idDueno}`, { headers: this.headers });
+  buscarPorFecha(fecha: string): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/fecha?fecha=${fecha}`);
   }
 
-  create(factura: Factura): Observable<Factura> {
-    return this.http.post<Factura>(this.apiUrl, factura, { headers: this.headers });
+  buscarPorRangoFechas(inicio: string, fin: string): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/rango?inicio=${inicio}&fin=${fin}`);
   }
 
-  update(id: number, factura: Factura): Observable<Factura> {
-    return this.http.put<Factura>(`${this.apiUrl}/${id}`, factura, { headers: this.headers });
+  buscarPorMetodoPago(metodo: string): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/metodo-pago/${metodo}`);
   }
 
-  marcarPagada(id: number): Observable<Factura> {
-    return this.http.patch<Factura>(`${this.apiUrl}/${id}/pagar`, {}, { headers: this.headers });
+  obtenerPendientes(): Observable<Factura[]> {
+    return this.http.get<Factura[]>(`${this.apiUrl}/pendientes`);
   }
 
-  delete(id: number): Observable<void> {
-    return this.http.delete<void>(`${this.apiUrl}/${id}`, { headers: this.headers });
+  crear(factura: Factura): Observable<Factura> {
+    return this.http.post<Factura>(this.apiUrl, factura);
+  }
+
+  actualizar(id: number, factura: Factura): Observable<Factura> {
+    return this.http.put<Factura>(`${this.apiUrl}/${id}`, factura);
+  }
+
+  eliminar(id: number): Observable<void> {
+    return this.http.delete<void>(`${this.apiUrl}/${id}`);
+  }
+
+  marcarComoPagada(id: number): Observable<Factura> {
+    return this.http.patch<Factura>(`${this.apiUrl}/${id}/pagar`, {});
+  }
+
+  calcularVentasDia(fecha: string): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/ventas-dia?fecha=${fecha}`);
+  }
+
+  calcularVentasMes(mes: number, anio: number): Observable<number> {
+    return this.http.get<number>(`${this.apiUrl}/ventas-mes?mes=${mes}&anio=${anio}`);
   }
 }
