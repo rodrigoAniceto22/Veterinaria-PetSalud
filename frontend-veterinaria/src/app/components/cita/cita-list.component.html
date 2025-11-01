@@ -1,0 +1,157 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <h2><i class="fas fa-calendar-check"></i> Gestión de Citas</h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-warning me-2" (click)="toggleAlertas()">
+        <i class="fas fa-bell"></i> Alertas
+        <span class="badge bg-danger ms-1" *ngIf="getTotalAlertas() > 0">
+          {{ getTotalAlertas() }}
+        </span>
+      </button>
+      <button class="btn btn-primary" (click)="nuevo()">
+        <i class="fas fa-plus"></i> Nueva Cita
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de Alertas -->
+  <div class="alert alert-danger" *ngIf="mostrarAlertas && alertas">
+    <h5><i class="fas fa-exclamation-triangle"></i> Alertas de Citas</h5>
+    
+    <div *ngIf="alertas.citasCriticas && alertas.citasCriticas.length > 0" class="mb-3">
+      <strong>🔴 Citas Críticas ({{ alertas.citasCriticas.length }}):</strong>
+      <ul>
+        <li *ngFor="let c of alertas.citasCriticas">
+          {{ c.mascota.nombre }} - {{ c.fechaHora | date:'dd/MM/yyyy HH:mm' }} - {{ c.motivo }}
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="alertas.citasDelDia && alertas.citasDelDia.length > 0" class="mb-3">
+      <strong>📅 Citas de Hoy ({{ alertas.citasDelDia.length }}):</strong>
+      <ul>
+        <li *ngFor="let c of alertas.citasDelDia">
+          {{ c.mascota.nombre }} - {{ c.fechaHora | date:'HH:mm' }} - {{ c.motivo }}
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="alertas.citasPendientesConfirmacion && alertas.citasPendientesConfirmacion.length > 0">
+      <strong>⏳ Pendientes de Confirmación ({{ alertas.citasPendientesConfirmacion.length }}):</strong>
+      <ul>
+        <li *ngFor="let c of alertas.citasPendientesConfirmacion">
+          {{ c.mascota.nombre }} - {{ c.fechaHora | date:'dd/MM/yyyy HH:mm' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <div class="btn-group" role="group">
+        <button 
+          *ngFor="let f of filtros"
+          type="button" 
+          class="btn"
+          [class.btn-primary]="filtro === f"
+          [class.btn-outline-primary]="filtro !== f"
+          (click)="cambiarFiltro(f)">
+          {{ f }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="cargando" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <table class="table table-hover" *ngIf="!cargando">
+        <thead>
+          <tr>
+            <th>Fecha/Hora</th>
+            <th>Mascota</th>
+            <th>Veterinario</th>
+            <th>Motivo</th>
+            <th>Tipo</th>
+            <th>Estado</th>
+            <th>Alerta</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let cita of citas">
+            <td>
+              <strong>{{ cita.fechaHora | date:'dd/MM/yyyy' }}</strong><br>
+              <small class="text-muted">{{ cita.fechaHora | date:'HH:mm' }}</small>
+            </td>
+            <td>{{ cita.mascota.nombre }}</td>
+            <td>
+              <span *ngIf="cita.veterinario">
+                {{ cita.veterinario.nombres }} {{ cita.veterinario.apellidos }}
+              </span>
+              <span *ngIf="!cita.veterinario" class="text-muted">Sin asignar</span>
+            </td>
+            <td>{{ cita.motivo }}</td>
+            <td>{{ cita.tipoCita || '-' }}</td>
+            <td>
+              <span class="badge" [ngClass]="getEstadoBadgeClass(cita.estado)">
+                {{ cita.estado }}
+              </span>
+            </td>
+            <td>
+              <span 
+                *ngIf="cita.nivelAlerta" 
+                class="badge" 
+                [ngClass]="getAlertaBadgeClass(cita.nivelAlerta)">
+                {{ cita.nivelAlerta }}
+              </span>
+            </td>
+            <td>
+              <button 
+                *ngIf="cita.estado === 'PROGRAMADA'"
+                class="btn btn-sm btn-success me-1" 
+                (click)="confirmar(cita.idCita!)"
+                title="Confirmar">
+                <i class="fas fa-check"></i>
+              </button>
+              <button 
+                *ngIf="cita.estado === 'CONFIRMADA'"
+                class="btn btn-sm btn-primary me-1" 
+                (click)="completar(cita.idCita!)"
+                title="Completar">
+                <i class="fas fa-check-double"></i>
+              </button>
+              <button class="btn btn-sm btn-info me-1" (click)="editar(cita.idCita!)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button 
+                *ngIf="cita.estado !== 'CANCELADA' && cita.estado !== 'COMPLETADA'"
+                class="btn btn-sm btn-warning me-1" 
+                (click)="cancelar(cita.idCita!)"
+                title="Cancelar">
+                <i class="fas fa-times"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="eliminar(cita.idCita!)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!cargando && citas.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <p>No hay citas registradas</p>
+      </div>
+    </div>
+  </div>
+</div>

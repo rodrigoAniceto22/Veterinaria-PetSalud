@@ -1,0 +1,121 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <h2><i class="fas fa-boxes"></i> Gestión de Inventario</h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-warning me-2" (click)="toggleAlertas()">
+        <i class="fas fa-bell"></i> Alertas
+        <span class="badge bg-danger ms-1" *ngIf="getTotalAlertas() > 0">
+          {{ getTotalAlertas() }}
+        </span>
+      </button>
+      <button class="btn btn-primary" (click)="nuevo()">
+        <i class="fas fa-plus"></i> Nuevo Producto
+      </button>
+    </div>
+  </div>
+
+  <!-- Panel de Alertas -->
+  <div class="alert alert-warning" *ngIf="mostrarAlertas && alertas">
+    <h5><i class="fas fa-exclamation-triangle"></i> Alertas de Inventario</h5>
+    
+    <div *ngIf="alertas.productosStockBajo && alertas.productosStockBajo.length > 0">
+      <strong>⚠️ Stock Bajo ({{ alertas.productosStockBajo.length }}):</strong>
+      <ul>
+        <li *ngFor="let p of alertas.productosStockBajo">
+          {{ p.nombre }} - Stock: {{ p.stockActual }} (Mínimo: {{ p.stockMinimo }})
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="alertas.productosVencidos && alertas.productosVencidos.length > 0">
+      <strong>🔴 Productos Vencidos ({{ alertas.productosVencidos.length }}):</strong>
+      <ul>
+        <li *ngFor="let p of alertas.productosVencidos">
+          {{ p.nombre }} - Vencido: {{ p.fechaVencimiento | date:'dd/MM/yyyy' }}
+        </li>
+      </ul>
+    </div>
+
+    <div *ngIf="alertas.productosProximosAVencer && alertas.productosProximosAVencer.length > 0">
+      <strong>🟡 Próximos a Vencer ({{ alertas.productosProximosAVencer.length }}):</strong>
+      <ul>
+        <li *ngFor="let p of alertas.productosProximosAVencer">
+          {{ p.nombre }} - Vence: {{ p.fechaVencimiento | date:'dd/MM/yyyy' }}
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- Búsqueda -->
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <div class="input-group">
+        <input 
+          type="text" 
+          class="form-control" 
+          placeholder="Buscar por nombre..." 
+          [(ngModel)]="filtro"
+          (keyup.enter)="buscar()">
+        <button class="btn btn-outline-secondary" (click)="buscar()">
+          <i class="fas fa-search"></i> Buscar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="cargando" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <table class="table table-hover" *ngIf="!cargando">
+        <thead>
+          <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+            <th>Stock</th>
+            <th>Precio Venta</th>
+            <th>Vencimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let inv of inventarios">
+            <td>{{ inv.codigo }}</td>
+            <td>{{ inv.nombre }}</td>
+            <td>{{ inv.categoria }}</td>
+            <td>
+              <span 
+                [class.text-danger]="inv.stockActual <= (inv.stockMinimo || 0)"
+                [class.text-warning]="inv.stockActual > (inv.stockMinimo || 0) && inv.stockActual <= (inv.stockMinimo || 0) * 1.5">
+                {{ inv.stockActual }} {{ inv.unidadMedida }}
+              </span>
+            </td>
+            <td>S/ {{ inv.precioVenta | number:'1.2-2' }}</td>
+            <td>{{ inv.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <button class="btn btn-sm btn-info me-1" (click)="editar(inv.idInventario!)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="eliminar(inv.idInventario!)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!cargando && inventarios.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <p>No hay productos registrados</p>
+      </div>
+    </div>
+  </div>
+</div>

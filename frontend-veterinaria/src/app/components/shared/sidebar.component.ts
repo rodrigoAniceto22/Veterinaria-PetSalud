@@ -63,12 +63,24 @@ export class SidebarComponent implements OnInit {
         ]
       },
       {
+        label: 'Citas',
+        icon: 'fa-calendar-check',
+        route: '/citas'
+      },
+      {
+        label: 'Inventario',
+        icon: 'fa-boxes',
+        route: '/inventario',
+        roles: ['ADMIN', 'VETERINARIO']
+      },
+      {
         label: 'Facturación',
         icon: 'fa-file-invoice-dollar',
         route: '#',
         roles: ['ADMIN', 'RECEPCIONISTA'],
         submenu: [
-          { label: 'Facturas', icon: 'fa-receipt', route: '/facturas' }
+          { label: 'Facturas', icon: 'fa-receipt', route: '/facturas' },
+          { label: 'Pagos', icon: 'fa-money-bill-wave', route: '/pagos' }
         ]
       },
       {

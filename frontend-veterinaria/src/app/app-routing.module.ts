@@ -45,6 +45,18 @@ import { FacturaFormComponent } from './components/factura/factura-form.componen
 import { ReporteKpiComponent } from './components/reporte/reporte-kpi.component';
 import { ReporteLaboratorioComponent } from './components/reporte/reporte-laboratorio.component';
 
+// Inventario
+import { InventarioListComponent } from './components/inventario/inventario-list.component';
+import { InventarioFormComponent } from './components/inventario/inventario-form.component';
+
+// Pagos
+import { PagoListComponent } from './components/pago/pago-list.component';
+import { PagoFormComponent } from './components/pago/pago-form.component';
+
+// Citas
+import { CitaListComponent } from './components/cita/cita-list.component';
+import { CitaFormComponent } from './components/cita/cita-form.component';
+
 const routes: Routes = [
   // Ruta por defecto
   { path: '', redirectTo: '/login', pathMatch: 'full' },
@@ -107,6 +119,21 @@ const routes: Routes = [
   // Reportes
   { path: 'reportes/kpis', component: ReporteKpiComponent },
   { path: 'reportes/laboratorio', component: ReporteLaboratorioComponent },
+  
+  // Inventario
+  { path: 'inventario', component: InventarioListComponent },
+  { path: 'inventario/nuevo', component: InventarioFormComponent },
+  { path: 'inventario/editar/:id', component: InventarioFormComponent },
+  
+  // Pagos
+  { path: 'pagos', component: PagoListComponent },
+  { path: 'pagos/nuevo', component: PagoFormComponent },
+  { path: 'pagos/editar/:id', component: PagoFormComponent },
+  
+  // Citas
+  { path: 'citas', component: CitaListComponent },
+  { path: 'citas/nuevo', component: CitaFormComponent },
+  { path: 'citas/editar/:id', component: CitaFormComponent },
   
   // Ruta 404
   { path: '**', redirectTo: '/dashboard' }

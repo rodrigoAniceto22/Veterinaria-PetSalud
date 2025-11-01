@@ -52,6 +52,18 @@ import { FacturaFormComponent } from './components/factura/factura-form.componen
 import { ReporteKpiComponent } from './components/reporte/reporte-kpi.component';
 import { ReporteLaboratorioComponent } from './components/reporte/reporte-laboratorio.component';
 
+// Inventario Components
+import { InventarioListComponent } from './components/inventario/inventario-list.component';
+import { InventarioFormComponent } from './components/inventario/inventario-form.component';
+
+// Pago Components
+import { PagoListComponent } from './components/pago/pago-list.component';
+import { PagoFormComponent } from './components/pago/pago-form.component';
+
+// Cita Components
+import { CitaListComponent } from './components/cita/cita-list.component';
+import { CitaFormComponent } from './components/cita/cita-form.component';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -99,7 +111,19 @@ import { ReporteLaboratorioComponent } from './components/reporte/reporte-labora
     
     // Reportes
     ReporteKpiComponent,
-    ReporteLaboratorioComponent
+    ReporteLaboratorioComponent,
+    
+    // Inventario
+    InventarioListComponent,
+    InventarioFormComponent,
+    
+    // Pagos
+    PagoListComponent,
+    PagoFormComponent,
+    
+    // Citas
+    CitaListComponent,
+    CitaFormComponent
   ],
   imports: [
     BrowserModule,

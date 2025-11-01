@@ -8,10 +8,6 @@ import org.springframework.web.filter.CorsFilter;
 
 import java.util.Arrays;
 
-/**
- * Configuración CORS para permitir peticiones desde el frontend Angular
- * Veterinaria PetSalud
- */
 @Configuration
 public class CorsConfig {
 
@@ -20,48 +16,26 @@ public class CorsConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         CorsConfiguration config = new CorsConfiguration();
         
-        // Permitir credenciales (cookies, headers de autenticación)
+        // Permitir credenciales
         config.setAllowCredentials(true);
         
-        // Orígenes permitidos (frontend Angular)
-        config.setAllowedOrigins(Arrays.asList(
-            "http://localhost:4200",
-            "http://localhost:4201",
-            "https://petsalud.com"
-        ));
+        // Permitir origen del frontend Angular
+        config.setAllowedOrigins(Arrays.asList("http://localhost:4200"));
         
-        // Headers permitidos
-        config.setAllowedHeaders(Arrays.asList(
-            "Origin",
-            "Content-Type",
-            "Accept",
-            "Authorization",
-            "Access-Control-Request-Method",
-            "Access-Control-Request-Headers"
-        ));
+        // Permitir todos los headers
+        config.addAllowedHeader("*");
         
-        // Métodos HTTP permitidos
-        config.setAllowedMethods(Arrays.asList(
-            "GET",
-            "POST",
-            "PUT",
-            "DELETE",
-            "PATCH",
-            "OPTIONS"
-        ));
+        // Permitir todos los métodos HTTP
+        config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         
-        // Headers expuestos al cliente
+        // Exponer headers
         config.setExposedHeaders(Arrays.asList(
             "Authorization",
+            "Content-Type",
             "Content-Disposition"
         ));
         
-        // Tiempo de cache para preflight requests (1 hora)
-        config.setMaxAge(3600L);
-        
-        // Aplicar configuración a todas las rutas
         source.registerCorsConfiguration("/**", config);
-        
         return new CorsFilter(source);
     }
 }

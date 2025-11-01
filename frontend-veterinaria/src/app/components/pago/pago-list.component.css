@@ -1,0 +1,20 @@
+.btn-group {
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.table td {
+  vertical-align: middle;
+}
+
+.table-danger {
+  background-color: #f8d7da !important;
+}
+
+.badge {
+  font-size: 0.85rem;
+  padding: 0.35em 0.65em;
+}
+
+.text-muted.small {
+  font-size: 0.8rem;
+}

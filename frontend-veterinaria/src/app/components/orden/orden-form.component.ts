@@ -78,13 +78,18 @@ export class OrdenFormComponent implements OnInit {
   }
 
   cargarDatosIniciales(): void {
+    console.log(' Cargando datos iniciales...');
+    
     // Cargar mascotas
     this.mascotaService.listarTodas().subscribe({
       next: (data) => {
+        console.log(' Mascotas cargadas:', data);
         this.mascotas = data;
+        console.log(' Total mascotas:', this.mascotas.length);
       },
       error: (error) => {
-        console.error('Error al cargar mascotas:', error);
+        console.error(' Error al cargar mascotas:', error);
+        console.error('Detalles del error:', error.message, error.status);
         this.notificacionService.errorGeneral('No se pudieron cargar las mascotas');
       }
     });
@@ -92,10 +97,13 @@ export class OrdenFormComponent implements OnInit {
     // Cargar veterinarios
     this.veterinarioService.listarTodos().subscribe({
       next: (data) => {
+        console.log(' Veterinarios cargados:', data);
         this.veterinarios = data.filter(v => v.activo);
+        console.log(' Total veterinarios activos:', this.veterinarios.length);
       },
       error: (error) => {
-        console.error('Error al cargar veterinarios:', error);
+        console.error(' Error al cargar veterinarios:', error);
+        console.error('Detalles del error:', error.message, error.status);
         this.notificacionService.errorGeneral('No se pudieron cargar los veterinarios');
       }
     });

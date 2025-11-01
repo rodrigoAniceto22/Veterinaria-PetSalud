@@ -1,0 +1,97 @@
+<div class="container-fluid mt-4">
+  <div class="row mb-3">
+    <div class="col-md-6">
+      <h2><i class="fas fa-money-bill-wave"></i> Gestión de Pagos</h2>
+    </div>
+    <div class="col-md-6 text-end">
+      <button class="btn btn-primary" (click)="nuevo()">
+        <i class="fas fa-plus"></i> Nuevo Pago
+      </button>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="row mb-3">
+    <div class="col-md-12">
+      <div class="btn-group" role="group">
+        <button 
+          *ngFor="let f of filtros"
+          type="button" 
+          class="btn"
+          [class.btn-primary]="filtro === f"
+          [class.btn-outline-primary]="filtro !== f"
+          (click)="cambiarFiltro(f)">
+          {{ f }}
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tabla -->
+  <div class="card">
+    <div class="card-body">
+      <div *ngIf="cargando" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Cargando...</span>
+        </div>
+      </div>
+
+      <table class="table table-hover" *ngIf="!cargando">
+        <thead>
+          <tr>
+            <th>N° Pago</th>
+            <th>Dueño</th>
+            <th>Mascota</th>
+            <th>Concepto</th>
+            <th>Monto</th>
+            <th>Estado</th>
+            <th>F. Emisión</th>
+            <th>F. Vencimiento</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let pago of pagos" [class.table-danger]="esVencido(pago)">
+            <td>{{ pago.numeroPago }}</td>
+            <td>{{ pago.dueno.nombres }} {{ pago.dueno.apellidos }}</td>
+            <td>{{ pago.mascota?.nombre || '-' }}</td>
+            <td>{{ pago.concepto }}</td>
+            <td>
+              <strong>S/ {{ pago.monto | number:'1.2-2' }}</strong>
+              <div *ngIf="pago.montoPagado && pago.montoPagado > 0" class="text-muted small">
+                Pagado: S/ {{ pago.montoPagado | number:'1.2-2' }}
+              </div>
+            </td>
+            <td>
+              <span class="badge" [ngClass]="getEstadoBadgeClass(pago.estado)">
+                {{ pago.estado }}
+              </span>
+            </td>
+            <td>{{ pago.fechaEmision | date:'dd/MM/yyyy' }}</td>
+            <td>{{ pago.fechaVencimiento | date:'dd/MM/yyyy' }}</td>
+            <td>
+              <button 
+                *ngIf="pago.estado !== 'PAGADO'"
+                class="btn btn-sm btn-success me-1" 
+                (click)="registrarPago(pago)"
+                title="Registrar Pago">
+                <i class="fas fa-dollar-sign"></i>
+              </button>
+              <button class="btn btn-sm btn-info me-1" (click)="editar(pago.idPago!)">
+                <i class="fas fa-edit"></i>
+              </button>
+              <button class="btn btn-sm btn-danger" (click)="eliminar(pago.idPago!)">
+                <i class="fas fa-trash"></i>
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+      <div *ngIf="!cargando && pagos.length === 0" class="text-center text-muted py-4">
+        <i class="fas fa-inbox fa-3x mb-3"></i>
+        <p>No hay pagos registrados</p>
+      </div>
+    </div>
+  </div>
+</div>

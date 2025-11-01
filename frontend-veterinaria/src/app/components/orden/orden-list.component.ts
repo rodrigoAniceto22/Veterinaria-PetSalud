@@ -120,7 +120,7 @@ export class OrdenListComponent implements OnInit {
   }
 
   nueva(): void {
-    this.router.navigate(['/ordenes/nuevo']);
+    this.router.navigate(['/ordenes/nueva']);
   }
 
   editar(id: number): void {

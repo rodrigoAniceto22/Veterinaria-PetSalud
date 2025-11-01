@@ -1,0 +1,127 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h4>
+            <i class="fas fa-calendar-plus"></i>
+            {{ esEdicion ? 'Editar Cita' : 'Nueva Cita' }}
+          </h4>
+        </div>
+        <div class="card-body">
+          <form (ngSubmit)="guardar()">
+            <div class="mb-3">
+              <label class="form-label">Mascota *</label>
+              <select 
+                class="form-select" 
+                [(ngModel)]="cita.mascota.idMascota"
+                name="idMascota"
+                required>
+                <option [value]="0">Seleccione una mascota...</option>
+                <option *ngFor="let mascota of mascotas" [value]="mascota.idMascota">
+                  {{ mascota.nombre }} - {{ mascota.especie }} (Dueño: {{ mascota.dueno?.nombres }} {{ mascota.dueno?.apellidos }})
+                </option>
+              </select>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Fecha y Hora *</label>
+                <input 
+                  type="datetime-local" 
+                  class="form-control" 
+                  [(ngModel)]="cita.fechaHora"
+                  name="fechaHora"
+                  required>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Duración (minutos)</label>
+                <select 
+                  class="form-select" 
+                  [(ngModel)]="cita.duracionMinutos"
+                  name="duracionMinutos">
+                  <option *ngFor="let duracion of duraciones" [value]="duracion">
+                    {{ duracion }} minutos
+                  </option>
+                </select>
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Tipo de Cita</label>
+                <select 
+                  class="form-select" 
+                  [(ngModel)]="cita.tipoCita"
+                  name="tipoCita">
+                  <option value="">Seleccione...</option>
+                  <option *ngFor="let tipo of tiposCita" [value]="tipo">{{ tipo }}</option>
+                </select>
+              </div>
+
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Estado</label>
+                <select 
+                  class="form-select" 
+                  [(ngModel)]="cita.estado"
+                  name="estado">
+                  <option *ngFor="let estado of estados" [value]="estado">{{ estado }}</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Motivo *</label>
+              <input 
+                type="text" 
+                class="form-control" 
+                [(ngModel)]="cita.motivo"
+                name="motivo"
+                placeholder="Ej: Vacunación, Control, Consulta general..."
+                required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Costo de Consulta (S/)</label>
+              <input 
+                type="number" 
+                class="form-control" 
+                [(ngModel)]="cita.costoConsulta"
+                name="costoConsulta"
+                step="0.01"
+                min="0">
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Observaciones</label>
+              <textarea 
+                class="form-control" 
+                rows="3"
+                [(ngModel)]="cita.observaciones"
+                name="observaciones"
+                placeholder="Información adicional sobre la cita..."></textarea>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button 
+                type="button" 
+                class="btn btn-secondary" 
+                (click)="volver()"
+                [disabled]="enviando">
+                <i class="fas fa-times"></i> Cancelar
+              </button>
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="enviando">
+                <i class="fas fa-save"></i>
+                {{ enviando ? 'Guardando...' : 'Guardar' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
