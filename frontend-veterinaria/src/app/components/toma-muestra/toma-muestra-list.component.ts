@@ -19,6 +19,7 @@ export class TomaMuestraListComponent implements OnInit {
   loading: boolean = true;
   searchTerm: string = '';
   filtroEstado: string = 'TODAS';
+  eliminando: boolean = false;
   filtroTecnicoId: number | null = null;
   filtroOrdenId: number | null = null;
   
@@ -219,19 +220,61 @@ export class TomaMuestraListComponent implements OnInit {
   }
 
   eliminar(toma: TomaMuestra): void {
-    if (this.notificacionService.confirmarAccion(
+    // Prevenir doble click
+    if (this.eliminando) {
+      console.log('Ya se está eliminando, ignorando click adicional');
+      return;
+    }
+    
+    console.log('=== INTENTANDO ELIMINAR TOMA DE MUESTRA ===');
+    console.log('Toma:', toma);
+    console.log('ID:', toma.idToma);
+    
+    if (!toma.idToma) {
+      console.error('ERROR: No hay ID de toma de muestra');
+      this.notificacionService.errorGeneral('Error: No se puede eliminar, falta el ID');
+      return;
+    }
+    
+    const confirmar = this.notificacionService.confirmarAccion(
       `¿Está seguro de eliminar la toma de muestra ${toma.codigoMuestra || 'sin código'}?`
-    )) {
-      this.tomaMuestraService.eliminar(toma.idToma!).subscribe({
+    );
+    
+    console.log('Usuario confirmó:', confirmar);
+    
+    if (confirmar) {
+      this.eliminando = true;
+      console.log('Llamando al servicio eliminar con ID:', toma.idToma);
+      
+      this.tomaMuestraService.eliminar(toma.idToma).subscribe({
         next: () => {
+          console.log('Toma de muestra eliminada exitosamente');
           this.notificacionService.exitoEliminar('Toma de muestra');
+          this.eliminando = false;
           this.cargarTomasMuestra();
         },
         error: (error) => {
-          console.error('Error:', error);
-          this.notificacionService.errorGeneral('No se pudo eliminar la toma de muestra');
+          console.error('=== ERROR AL ELIMINAR ===');
+          console.error('Status:', error.status);
+          console.error('Message:', error.message);
+          console.error('Error completo:', error);
+          
+          this.eliminando = false;
+          
+          let mensaje = 'No se pudo eliminar la toma de muestra';
+          if (error.status === 404) {
+            mensaje = 'Toma de muestra no encontrada';
+          } else if (error.status === 500) {
+            mensaje = 'Error en el servidor al eliminar';
+          } else if (error.status === 409) {
+            mensaje = 'No se puede eliminar: la toma de muestra tiene dependencias';
+          }
+          
+          this.notificacionService.errorGeneral(mensaje);
         }
       });
+    } else {
+      console.log('Usuario canceló la eliminación');
     }
   }
 

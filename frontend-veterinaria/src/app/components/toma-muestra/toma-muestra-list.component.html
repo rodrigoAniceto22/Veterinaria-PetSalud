@@ -192,8 +192,11 @@
                     </ul>
                   </div>
                   
-                  <button class="btn btn-outline-danger" (click)="eliminar(toma)" title="Eliminar">
-                    <i class="fas fa-trash"></i>
+                  <button class="btn btn-outline-danger" 
+                          (click)="eliminar(toma); $event.stopPropagation()" 
+                          [disabled]="eliminando"
+                          title="Eliminar">
+                    <i class="fas" [class.fa-trash]="!eliminando" [class.fa-spinner]="eliminando" [class.fa-spin]="eliminando"></i>
                   </button>
                 </div>
               </td>

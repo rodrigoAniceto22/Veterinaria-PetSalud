@@ -17,7 +17,7 @@ export class ResultadoListComponent implements OnInit {
   filtroEstado: string = 'TODOS';
   filtroOrdenId: number | null = null;
 
-  // Filtros de estado
+  // Filtros de estado (deben coincidir exactamente con getEstadoTexto)
   estados = ['TODOS', 'PENDIENTE', 'VALIDADO', 'ENTREGADO'];
 
   // Paginación
@@ -71,34 +71,42 @@ export class ResultadoListComponent implements OnInit {
   }
 
   procesarResultados(data: ResultadoVeterinario[]): void {
-    this.resultados = data;
-    this.aplicarFiltros();
+    console.log('Resultados recibidos del backend:', data.length, 'resultados');
+    this.resultados = data || []; // Asegurar que siempre sea un array
+    
+    // Asegurar que el filtro esté en TODOS al cargar
+    this.filtroEstado = 'TODOS';
+    this.searchTerm = '';
+    
+    // Mostrar TODOS los resultados directamente sin filtrar
+    this.resultadosFiltrados = [...this.resultados];
+    console.log('Mostrando todos los resultados:', this.resultadosFiltrados.length);
+    
+    this.calcularPaginacion();
+    this.paginaActual = 1;
     this.loading = false;
   }
 
   aplicarFiltros(): void {
-    let resultado = this.resultados;
-
-    // Filtro por estado
-    if (this.filtroEstado !== 'TODOS') {
-      resultado = resultado.filter(r => {
-        if (this.filtroEstado === 'PENDIENTE') return !r.validado;
-        if (this.filtroEstado === 'VALIDADO') return r.validado && !r.entregado;
-        if (this.filtroEstado === 'ENTREGADO') return r.entregado;
-        return true;
-      });
-    }
+    let resultado = [...this.resultados];
 
     // Filtro por búsqueda
-    if (this.searchTerm.trim() !== '') {
+    if (this.searchTerm && this.searchTerm.trim() !== '') {
       const term = this.searchTerm.toLowerCase();
       resultado = resultado.filter(r =>
         r.descripcion?.toLowerCase().includes(term) ||
         r.valores?.toLowerCase().includes(term) ||
-        r.conclusiones?.toLowerCase().includes(term)
+        r.conclusiones?.toLowerCase().includes(term) ||
+        r.orden?.tipoExamen?.toLowerCase().includes(term) ||
+        r.idResultado?.toString().includes(term)
       );
     }
 
+    // Filtro por estado
+    if (this.filtroEstado !== 'TODOS') {
+      resultado = resultado.filter(r => this.getEstadoTexto(r) === this.filtroEstado);
+    }
+    
     this.resultadosFiltrados = resultado;
     this.calcularPaginacion();
     this.paginaActual = 1;
@@ -116,6 +124,13 @@ export class ResultadoListComponent implements OnInit {
   limpiarBusqueda(): void {
     this.searchTerm = '';
     this.aplicarFiltros();
+  }
+
+  actualizarLista(): void {
+    console.log('=== ACTUALIZANDO LISTA DE RESULTADOS ===');
+    this.filtroEstado = 'TODOS';
+    this.searchTerm = '';
+    this.cargarResultados();
   }
 
   limpiarFiltroOrden(): void {
@@ -246,9 +261,9 @@ export class ResultadoListComponent implements OnInit {
   }
 
   getEstadoTexto(resultado: ResultadoVeterinario): string {
-    if (resultado.entregado) return 'Entregado';
-    if (resultado.validado) return 'Validado';
-    return 'Pendiente';
+    if (resultado.entregado) return 'ENTREGADO';
+    if (resultado.validado) return 'VALIDADO';
+    return 'PENDIENTE';
   }
 
   getEstadoIcono(resultado: ResultadoVeterinario): string {

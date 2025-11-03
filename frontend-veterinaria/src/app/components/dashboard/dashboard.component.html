@@ -97,15 +97,21 @@
             <h5 class="mb-0"><i class="fas fa-chart-pie me-2"></i>Órdenes por Estado</h5>
           </div>
           <div class="card-body">
-            <div *ngFor="let item of ordenesPorEstado" class="mb-3">
-              <div class="d-flex justify-content-between mb-1">
-                <span>{{ item.estado }}</span>
-                <span class="badge" [ngClass]="getBadgeClass(item.estado)">{{ item.cantidad }}</span>
+            <div *ngIf="ordenesPorEstado && ordenesPorEstado.length > 0">
+              <div *ngFor="let item of ordenesPorEstado" class="mb-3">
+                <div class="d-flex justify-content-between mb-1">
+                  <span>{{ item.estado }}</span>
+                  <span class="badge" [ngClass]="getBadgeClass(item.estado)">{{ item.cantidad }}</span>
+                </div>
+                <div class="progress" style="height: 10px;">
+                  <div class="progress-bar" [ngClass]="getBadgeClass(item.estado)" 
+                       [style.width.%]="totalOrdenes > 0 ? (item.cantidad / totalOrdenes * 100) : 0"></div>
+                </div>
               </div>
-              <div class="progress" style="height: 10px;">
-                <div class="progress-bar" [ngClass]="getBadgeClass(item.estado)" 
-                     [style.width.%]="(item.cantidad / totalOrdenes * 100)"></div>
-              </div>
+            </div>
+            <div *ngIf="!ordenesPorEstado || ordenesPorEstado.length === 0" class="text-center text-muted py-3">
+              <i class="fas fa-inbox fa-2x mb-2"></i>
+              <p>No hay datos de órdenes</p>
             </div>
           </div>
         </div>
@@ -114,16 +120,59 @@
       <div class="col-md-6">
         <div class="card border-0 shadow-sm">
           <div class="card-header bg-white">
-            <h5 class="mb-0"><i class="fas fa-paw me-2"></i>Especies Atendidas</h5>
+            <h5 class="mb-0"><i class="fas fa-paw me-2"></i>Especies Más Atendidas</h5>
           </div>
           <div class="card-body">
-            <ul class="list-group list-group-flush">
-              <li class="list-group-item d-flex justify-content-between" *ngFor="let especie of especiesAtendidas">
-                <span><i class="fas fa-dog me-2 text-primary"></i>{{ especie.nombre }}</span>
-                <span class="badge bg-primary rounded-pill">{{ especie.cantidad }}</span>
-              </li>
-            </ul>
+            <div *ngIf="especiesAtendidas && especiesAtendidas.length > 0">
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let especie of especiesAtendidas">
+                  <span><i class="fas fa-dog me-2 text-primary"></i>{{ especie.nombre }}</span>
+                  <span class="badge bg-primary rounded-pill">{{ especie.cantidad }}</span>
+                </li>
+              </ul>
+            </div>
+            <div *ngIf="!especiesAtendidas || especiesAtendidas.length === 0" class="text-center text-muted py-3">
+              <i class="fas fa-inbox fa-2x mb-2"></i>
+              <p>No hay datos de especies</p>
+            </div>
           </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tiempo Promedio -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-clock me-2"></i>Tiempo Promedio de Atención</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="tiempoPromedioAtencion && tiempoPromedioAtencion > 0">
+          <h3 class="mb-0">{{ tiempoPromedioAtencion }} minutos</h3>
+        </div>
+        <div *ngIf="!tiempoPromedioAtencion || tiempoPromedioAtencion === 0" class="text-center text-muted py-3">
+          <i class="fas fa-inbox fa-2x mb-2"></i>
+          <p>No hay datos de tiempo promedio</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Análisis Repetidos -->
+    <div class="card border-0 shadow-sm">
+      <div class="card-header bg-white">
+        <h5 class="mb-0"><i class="fas fa-flask me-2"></i>Análisis Repetidos</h5>
+      </div>
+      <div class="card-body">
+        <div *ngIf="analisisRepetidos && analisisRepetidos.length > 0">
+          <ul class="list-group list-group-flush">
+            <li class="list-group-item d-flex justify-content-between align-items-center" *ngFor="let analisis of analisisRepetidos">
+              <span>{{ analisis.nombre }}</span>
+              <span class="badge bg-primary rounded-pill">{{ analisis.cantidad }}</span>
+            </li>
+          </ul>
+        </div>
+        <div *ngIf="!analisisRepetidos || analisisRepetidos.length === 0" class="text-center text-muted py-3">
+          <i class="fas fa-inbox fa-2x mb-2"></i>
+          <p>No hay datos de análisis repetidos</p>
         </div>
       </div>
     </div>

@@ -97,8 +97,13 @@ public class TomaMuestraController {
      */
     @PostMapping
     public ResponseEntity<TomaMuestraVet> crear(@RequestBody TomaMuestraVet tomaMuestra) {
-        TomaMuestraVet nuevaToma = tomaMuestraService.guardar(tomaMuestra);
-        return ResponseEntity.status(HttpStatus.CREATED).body(nuevaToma);
+        try {
+            TomaMuestraVet nuevaToma = tomaMuestraService.guardar(tomaMuestra);
+            return ResponseEntity.status(HttpStatus.CREATED).body(nuevaToma);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     /**
@@ -107,13 +112,18 @@ public class TomaMuestraController {
      */
     @PutMapping("/{id}")
     public ResponseEntity<TomaMuestraVet> actualizar(@PathVariable Long id, @RequestBody TomaMuestraVet tomaMuestra) {
-        TomaMuestraVet tomaExistente = tomaMuestraService.obtenerPorId(id);
-        if (tomaExistente == null) {
-            return ResponseEntity.notFound().build();
+        try {
+            TomaMuestraVet tomaExistente = tomaMuestraService.obtenerPorId(id);
+            if (tomaExistente == null) {
+                return ResponseEntity.notFound().build();
+            }
+            tomaMuestra.setIdToma(id);
+            TomaMuestraVet tomaActualizada = tomaMuestraService.guardar(tomaMuestra);
+            return ResponseEntity.ok(tomaActualizada);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.badRequest().build();
         }
-        tomaMuestra.setIdToma(id);
-        TomaMuestraVet tomaActualizada = tomaMuestraService.guardar(tomaMuestra);
-        return ResponseEntity.ok(tomaActualizada);
     }
 
     /**

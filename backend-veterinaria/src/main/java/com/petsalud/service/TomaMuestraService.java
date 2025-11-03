@@ -2,6 +2,8 @@ package com.petsalud.service;
 
 import com.petsalud.model.TomaMuestraVet;
 import com.petsalud.repository.TomaMuestraVetRepository;
+import com.petsalud.repository.OrdenRepository;
+import com.petsalud.repository.TecnicoVeterinarioRepository;
 import com.petsalud.util.QRCodeUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -25,6 +27,12 @@ public class TomaMuestraService {
 
     @Autowired
     private NotificacionService notificacionService;
+
+    @Autowired
+    private OrdenRepository ordenRepository;
+
+    @Autowired
+    private TecnicoVeterinarioRepository tecnicoRepository;
 
     /**
      * Listar todas las tomas de muestra
@@ -99,13 +107,23 @@ public class TomaMuestraService {
         if (tomaMuestra.getTipoMuestra() == null || tomaMuestra.getTipoMuestra().trim().isEmpty()) {
             throw new RuntimeException("El tipo de muestra es obligatorio");
         }
-        if (tomaMuestra.getOrden() == null) {
+        if (tomaMuestra.getOrden() == null || tomaMuestra.getOrden().getIdOrden() == null) {
             throw new RuntimeException("La toma de muestra debe estar asociada a una orden");
         }
-        if (tomaMuestra.getTecnico() == null) {
+        if (tomaMuestra.getTecnico() == null || tomaMuestra.getTecnico().getIdTecnico() == null) {
             throw new RuntimeException("La toma de muestra debe tener un técnico asignado");
         }
-        
+
+        // Cargar orden y tecnico completos si solo vienen los IDs
+        if (tomaMuestra.getOrden().getTipoExamen() == null) {
+            tomaMuestra.setOrden(ordenRepository.findById(tomaMuestra.getOrden().getIdOrden())
+                .orElseThrow(() -> new RuntimeException("Orden no encontrada")));
+        }
+        if (tomaMuestra.getTecnico().getNombres() == null) {
+            tomaMuestra.setTecnico(tecnicoRepository.findById(tomaMuestra.getTecnico().getIdTecnico())
+                .orElseThrow(() -> new RuntimeException("Técnico no encontrado")));
+        }
+
         // Si es una nueva toma, generar código único
         if (tomaMuestra.getIdToma() == null) {
             if (tomaMuestra.getCodigoMuestra() == null) {
@@ -132,8 +150,17 @@ public class TomaMuestraService {
     /**
      * Eliminar toma de muestra
      */
+    @Transactional
     public void eliminar(Long id) {
-        tomaMuestraRepository.deleteById(id);
+        TomaMuestraVet toma = tomaMuestraRepository.findById(id).orElse(null);
+        if (toma != null) {
+            // Limpiar la relación bidireccional si existe
+            if (toma.getOrden() != null) {
+                toma.getOrden().setTomaMuestra(null);
+            }
+            tomaMuestraRepository.delete(toma);
+            tomaMuestraRepository.flush();
+        }
     }
 
     /**
@@ -198,4 +225,5 @@ public class TomaMuestraService {
     public List<TomaMuestraVet> buscarPorRangoFechas(LocalDateTime inicio, LocalDateTime fin) {
         return tomaMuestraRepository.findByFechaHoraBetween(inicio, fin);
     }
+    
 }

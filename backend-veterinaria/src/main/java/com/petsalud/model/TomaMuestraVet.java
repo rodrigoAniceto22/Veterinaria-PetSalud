@@ -43,13 +43,13 @@ public class TomaMuestraVet {
     private String codigoMuestra; // Código único de identificación de la muestra
 
     // Relación 1:1 con OrdenVeterinaria
-    @OneToOne
+    @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_orden", nullable = false, unique = true)
     @JsonIgnoreProperties({"tomaMuestra", "resultados"})
     private OrdenVeterinaria orden;
 
     // Relación N:1 con TecnicoVeterinario
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_tecnico", nullable = false)
     @JsonIgnoreProperties({"tomasMuestra"})
     private TecnicoVeterinario tecnico;

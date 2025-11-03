@@ -56,7 +56,7 @@ public class ResultadoVeterinario {
     private String observacionesTecnicas;
 
     // Relación N:1 con OrdenVeterinaria
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_orden", nullable = false)
     @JsonIgnoreProperties({"resultados", "tomaMuestra"})
     private OrdenVeterinaria orden;

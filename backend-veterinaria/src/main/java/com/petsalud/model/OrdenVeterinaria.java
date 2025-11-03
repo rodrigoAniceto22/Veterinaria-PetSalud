@@ -41,13 +41,13 @@ public class OrdenVeterinaria {
     private String sintomas;
 
     // Relación N:1 con Mascota
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_mascota", nullable = false)
     @JsonIgnoreProperties({"ordenes", "dueno"})
     private Mascota mascota;
 
     // Relación N:1 con Veterinario
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "id_veterinario", nullable = false)
     @JsonIgnoreProperties({"ordenes"})
     private Veterinario veterinario;

@@ -6,9 +6,14 @@
       <h2><i class="fas fa-file-medical-alt me-2"></i>Gestión de Resultados</h2>
       <p class="text-muted">Resultados de análisis veterinarios</p>
     </div>
-    <button class="btn btn-primary" (click)="nuevo()">
-      <i class="fas fa-plus me-2"></i>Nuevo Resultado
-    </button>
+    <div>
+      <button class="btn btn-outline-secondary me-2" (click)="actualizarLista()" title="Actualizar lista">
+        <i class="fas fa-sync-alt me-2"></i>Actualizar
+      </button>
+      <button class="btn btn-primary" (click)="nuevo()">
+        <i class="fas fa-plus me-2"></i>Nuevo Resultado
+      </button>
+    </div>
   </div>
 
   <!-- Buscador y Filtros -->
@@ -80,13 +85,22 @@
             <tr *ngFor="let resultado of resultadosPaginados">
               <td><strong>#{{ resultado.idResultado }}</strong></td>
               <td>
-                <small>{{ resultado.fechaResultado | date:'dd/MM/yyyy HH:mm' }}</small>
+                <small *ngIf="resultado.fechaResultado">{{ resultado.fechaResultado | date:'dd/MM/yyyy HH:mm' }}</small>
+                <small *ngIf="!resultado.fechaResultado" class="text-muted">-</small>
               </td>
               <td>
                 <div *ngIf="resultado.orden">
                   <small><strong>Orden #{{ resultado.orden.idOrden }}</strong></small>
                   <br>
                   <small class="text-muted">{{ resultado.orden.tipoExamen }}</small>
+                  <br>
+                  <small class="text-muted" *ngIf="resultado.orden.mascota">
+                    <i class="fas fa-paw"></i> {{ resultado.orden.mascota.nombre }}
+                  </small>
+                  <br>
+                  <small class="text-muted" *ngIf="resultado.orden.veterinario">
+                    <i class="fas fa-user-md"></i> {{ resultado.orden.veterinario.nombre }} {{ resultado.orden.veterinario.apellido }}
+                  </small>
                 </div>
               </td>
               <td>
@@ -103,8 +117,11 @@
               <td>
                 <div *ngIf="resultado.validado">
                   <i class="fas fa-check-circle text-success"></i>
-                  <small class="d-block text-muted">
+                  <small class="d-block text-muted" *ngIf="resultado.fechaValidacion">
                     {{ resultado.fechaValidacion | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                  <small class="d-block text-muted" *ngIf="!resultado.fechaValidacion">
+                    Validado
                   </small>
                 </div>
                 <div *ngIf="!resultado.validado">
@@ -115,8 +132,11 @@
               <td>
                 <div *ngIf="resultado.entregado">
                   <i class="fas fa-check-double text-success"></i>
-                  <small class="d-block text-muted">
+                  <small class="d-block text-muted" *ngIf="resultado.fechaEntrega">
                     {{ resultado.fechaEntrega | date:'dd/MM/yyyy HH:mm' }}
+                  </small>
+                  <small class="d-block text-muted" *ngIf="!resultado.fechaEntrega">
+                    Entregado
                   </small>
                 </div>
                 <div *ngIf="!resultado.entregado">

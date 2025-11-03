@@ -211,7 +211,7 @@
         <div class="card-body">
           <div class="row">
             <div class="col-md-6">
-              <p class="mb-2">
+              <p class="mb-2" *ngIf="resultadoForm.value.fechaResultado">
                 <i class="fas fa-calendar me-2 text-primary"></i>
                 <strong>Fecha de Resultado:</strong> 
                 {{ resultadoForm.value.fechaResultado | date:'dd/MM/yyyy HH:mm' }}

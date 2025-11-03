@@ -211,11 +211,55 @@ export class ReporteKpiComponent implements OnInit {
   }
 
   procesarDashboard(data: any): void {
-    // Procesar datos del dashboard según estructura recibida
-    if (data) {
-      // Aquí puedes procesar los datos adicionales del dashboard
-      console.log('Dashboard cargado:', data);
+    console.log('=== PROCESANDO DASHBOARD KPIs ===');
+    console.log('Data recibida:', data);
+    
+    if (!data) return;
+    
+    // KPIs principales
+    this.kpis.totalOrdenes = data.totalOrdenes || 0;
+    this.kpis.ordenesPendientes = data.ordenesPendientes || 0;
+    this.kpis.resultadosValidados = data.resultadosValidados || 0;
+    
+    // Órdenes por estado
+    if (data.ordenesPorEstado && data.ordenesPorEstado.length > 0) {
+      this.ordenesPorEstado = {
+        labels: data.ordenesPorEstado.map((item: any) => item.estado),
+        data: data.ordenesPorEstado.map((item: any) => item.cantidad),
+        colors: this.getColoresEstado(data.ordenesPorEstado.map((item: any) => item.estado))
+      };
+      console.log('Órdenes por estado procesadas:', this.ordenesPorEstado);
     }
+    
+    // Especies atendidas
+    if (data.especiesAtendidas && data.especiesAtendidas.length > 0) {
+      this.especiesAtendidas = {
+        labels: data.especiesAtendidas.map((item: any) => item.nombre),
+        data: data.especiesAtendidas.map((item: any) => item.cantidad),
+        colors: this.getColoresEspecies(data.especiesAtendidas.map((item: any) => item.nombre))
+      };
+      console.log('Especies atendidas procesadas:', this.especiesAtendidas);
+    }
+    
+    // Tiempo promedio
+    if (data.tiempoPromedioAtencion) {
+      this.tiempoPromedio = {
+        tiempoPromedioHoras: data.tiempoPromedioAtencion / 60,
+        cumpleObjetivo: data.tiempoPromedioAtencion < 720
+      };
+      console.log('Tiempo promedio procesado:', this.tiempoPromedio);
+    }
+    
+    // Análisis repetidos
+    if (data.analisisRepetidos && data.analisisRepetidos.length > 0) {
+      this.analisisRepetidos = {
+        analisisPorTipo: data.analisisRepetidos,
+        totalOrdenes: data.totalOrdenes
+      };
+      console.log('Análisis repetidos procesados:', this.analisisRepetidos);
+    }
+    
+    console.log('=================================');
   }
 
   aplicarFiltros(): void {

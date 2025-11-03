@@ -137,32 +137,77 @@ export class TomaMuestraFormComponent implements OnInit {
   }
 
   cargarTomaMuestra(id: number): void {
+    console.log('=== CARGANDO TOMA DE MUESTRA ===' );
+    console.log('ID:', id);
+    console.log('URL:', `http://localhost:8080/api/toma-muestras/${id}`);
+    
     this.loading = true;
+    
+    // Timeout de seguridad para evitar carga infinita
+    const timeoutId = setTimeout(() => {
+      if (this.loading) {
+        console.error('TIMEOUT: La carga tomó más de 10 segundos');
+        this.loading = false;
+        this.notificacionService.errorGeneral('La carga está tomando demasiado tiempo. Verifique su conexión.');
+      }
+    }, 10000);
+    
     this.tomaMuestraService.obtenerPorId(id).subscribe({
       next: (toma) => {
-        // Convertir fecha a formato input datetime-local
-        const fecha = new Date(toma.fechaHora);
-        const fechaLocal = fecha.toISOString().slice(0, 16);
+        clearTimeout(timeoutId);
+        console.log('Toma de muestra recibida exitosamente:', toma);
+        
+        if (!toma) {
+          console.error('ERROR: Respuesta vacía del servidor');
+          this.notificacionService.errorGeneral('No se encontró la toma de muestra');
+          this.loading = false;
+          return;
+        }
+        
+        try {
+          // Convertir fecha a formato input datetime-local
+          const fecha = new Date(toma.fechaHora);
+          const fechaLocal = fecha.toISOString().slice(0, 16);
 
-        this.tomaMuestraForm.patchValue({
-          fechaHora: fechaLocal,
-          tipoMuestra: toma.tipoMuestra,
-          metodoObtencion: toma.metodoObtencion,
-          volumenMuestra: toma.volumenMuestra,
-          condicionesMuestra: toma.condicionesMuestra,
-          observaciones: toma.observaciones,
-          estado: toma.estado,
-          codigoMuestra: toma.codigoMuestra,
-          orden: toma.orden?.idOrden,
-          tecnico: toma.tecnico?.idTecnico
-        });
+          this.tomaMuestraForm.patchValue({
+            fechaHora: fechaLocal,
+            tipoMuestra: toma.tipoMuestra,
+            metodoObtencion: toma.metodoObtencion,
+            volumenMuestra: toma.volumenMuestra,
+            condicionesMuestra: toma.condicionesMuestra,
+            observaciones: toma.observaciones,
+            estado: toma.estado,
+            codigoMuestra: toma.codigoMuestra,
+            orden: toma.orden?.idOrden,
+            tecnico: toma.tecnico?.idTecnico
+          });
 
-        this.loading = false;
+          console.log('Formulario actualizado correctamente');
+          this.loading = false;
+        } catch (err) {
+          console.error('ERROR al procesar los datos:', err);
+          this.notificacionService.errorGeneral('Error al procesar los datos de la toma de muestra');
+          this.loading = false;
+        }
       },
       error: (error) => {
-        console.error('Error:', error);
-        this.notificacionService.errorGeneral('No se pudo cargar la toma de muestra');
-        this.volver();
+        clearTimeout(timeoutId);
+        console.error('=== ERROR AL CARGAR TOMA DE MUESTRA ===');
+        console.error('Status:', error.status);
+        console.error('Message:', error.message);
+        console.error('Error completo:', error);
+        
+        let mensaje = 'No se pudo cargar la toma de muestra';
+        if (error.status === 404) {
+          mensaje = 'Toma de muestra no encontrada';
+        } else if (error.status === 500) {
+          mensaje = 'Error en el servidor. Verifique los logs del backend';
+        } else if (error.status === 0) {
+          mensaje = 'No se puede conectar con el servidor. Verifique que el backend esté ejecutándose';
+        }
+        
+        this.notificacionService.errorGeneral(mensaje);
+        this.loading = false;
       }
     });
   }

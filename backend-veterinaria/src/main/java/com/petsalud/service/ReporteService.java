@@ -305,93 +305,108 @@ public class ReporteService {
         
         return reporte;
     }
-
-    /**
-     * Obtener órdenes por estado
-     */
-    public Map<String, Object> obtenerOrdenesPorEstado() {
+        public Map<String, Object> obtenerOrdenesPorEstado() {
         Map<String, Object> reporte = new HashMap<>();
         
         reporte.put("pendientes", ordenRepository.countByEstadoIgnoreCase("PENDIENTE"));
         reporte.put("enProceso", ordenRepository.countByEstadoIgnoreCase("EN_PROCESO"));
         reporte.put("completadas", ordenRepository.countByEstadoIgnoreCase("COMPLETADA"));
         reporte.put("canceladas", ordenRepository.countByEstadoIgnoreCase("CANCELADA"));
-        reporte.put("total", ordenRepository.count());
         
         return reporte;
-    }
+        }
 
     /**
      * Dashboard completo con métricas principales
-     */
-    public Map<String, Object> obtenerDashboardCompleto() {
-        Map<String, Object> dashboard = new HashMap<>();
-        
-        // KPIs generales
-        dashboard.put("kpisGenerales", obtenerKPIsGenerales());
-        
-        // Órdenes por estado
-        dashboard.put("ordenesPorEstado", obtenerOrdenesPorEstado());
-        
-        // Análisis del mes actual
-        LocalDate inicioMes = LocalDate.now().withDayOfMonth(1);
-        LocalDate finMes = LocalDate.now();
-        
-        dashboard.put("analisisMes", obtenerAnalisisPorTipo(inicioMes, finMes));
-        dashboard.put("ingresosMes", calcularIngresos(inicioMes, finMes));
-        dashboard.put("especiesMes", obtenerEspeciesAtendidas(inicioMes, finMes));
-        
-        // Tiempo promedio
-        dashboard.put("tiempoPromedio", calcularTiempoPromedio(inicioMes, finMes));
-        
-        // Satisfacción del cliente
-        dashboard.put("satisfaccion", obtenerSatisfaccionCliente());
-        
-        // Fecha de generación
-        dashboard.put("fechaGeneracion", LocalDateTime.now());
-        
-        return dashboard;
+     */public Map<String, Object> obtenerDashboardCompleto() {
+    Map<String, Object> dashboard = new HashMap<>();
+    
+    
+    // KPIs principales para el dashboard
+    long totalOrdenes = ordenRepository.count();
+    dashboard.put("totalOrdenes", totalOrdenes);
+    dashboard.put("ordenesPendientes", ordenRepository.countByEstadoIgnoreCase("PENDIENTE"));
+    dashboard.put("resultadosValidados", resultadoRepository.countByValidadoTrue());
+    
+    // Ingresos del mes actual
+    LocalDate inicioMes = LocalDate.now().withDayOfMonth(1);
+    LocalDate finMes = LocalDate.now();
+    Map<String, Object> ingresosMes = calcularIngresos(inicioMes, finMes);
+    dashboard.put("ingresosMes", ingresosMes.get("totalPagado"));
+    
+    // Órdenes por estado (formato array para gráficos)
+    List<Map<String, Object>> ordenesPorEstado = new ArrayList<>();
+    long pendientes = ordenRepository.countByEstadoIgnoreCase("PENDIENTE");
+    long enProceso = ordenRepository.countByEstadoIgnoreCase("EN_PROCESO");
+    long completadas = ordenRepository.countByEstadoIgnoreCase("COMPLETADA");
+    long canceladas = ordenRepository.countByEstadoIgnoreCase("CANCELADA");
+    
+    ordenesPorEstado.add(crearItemEstado("PENDIENTE", pendientes));
+    ordenesPorEstado.add(crearItemEstado("EN_PROCESO", enProceso));
+    ordenesPorEstado.add(crearItemEstado("COMPLETADA", completadas));
+    ordenesPorEstado.add(crearItemEstado("CANCELADA", canceladas));
+    dashboard.put("ordenesPorEstado", ordenesPorEstado);
+    
+    // Especies atendidas - obtener de todas las órdenes
+    List<OrdenVeterinaria> todasOrdenes = ordenRepository.findAll();
+    Map<String, Long> especiesCount = new HashMap<>();
+    
+    for (OrdenVeterinaria orden : todasOrdenes) {
+        if (orden.getMascota() != null && orden.getMascota().getEspecie() != null) {
+            String especie = orden.getMascota().getEspecie();
+            especiesCount.put(especie, especiesCount.getOrDefault(especie, 0L) + 1);
+        }
     }
-
-    /**
-     * Reporte de órdenes urgentes pendientes
-     */
-    public Map<String, Object> obtenerOrdenesUrgentes() {
-        Map<String, Object> reporte = new HashMap<>();
-        
-        List<OrdenVeterinaria> ordenesUrgentes = ordenRepository
-                .findByPrioridadIgnoreCase("URGENTE")
-                .stream()
-                .filter(o -> !"COMPLETADA".equalsIgnoreCase(o.getEstado()))
-                .collect(Collectors.toList());
-        
-        reporte.put("totalOrdenesUrgentes", ordenesUrgentes.size());
-        reporte.put("ordenes", ordenesUrgentes);
-        
-        return reporte;
+    
+    List<Map<String, Object>> especiesAtendidas = new ArrayList<>();
+    especiesCount.entrySet().stream()
+        .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+        .limit(5)
+        .forEach(entry -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("nombre", entry.getKey());
+            item.put("cantidad", entry.getValue());
+            especiesAtendidas.add(item);
+        });
+    dashboard.put("especiesAtendidas", especiesAtendidas);
+    
+    // Análisis más repetidos
+    Map<String, Long> analisisCount = new HashMap<>();
+    for (OrdenVeterinaria orden : todasOrdenes) {
+        if (orden.getTipoExamen() != null) {
+            String tipoExamen = orden.getTipoExamen();
+            analisisCount.put(tipoExamen, analisisCount.getOrDefault(tipoExamen, 0L) + 1);
+        }
     }
-
-    /**
-     * Reporte de eficiencia del laboratorio
-     */
-    public Map<String, Object> obtenerEficienciaLaboratorio(LocalDate inicio, LocalDate fin) {
-        Map<String, Object> reporte = new HashMap<>();
-        
-        // Tiempo promedio
-        Map<String, Object> tiempoPromedio = calcularTiempoPromedio(inicio, fin);
-        
-        // Análisis repetidos
-        Map<String, Object> analisisRepetidos = calcularAnalisisRepetidos(inicio, fin);
-        
-        // Productividad
-        Map<String, Object> productividadTecnicos = obtenerProductividadTecnicos(inicio, fin);
-        
-        reporte.put("tiempoPromedio", tiempoPromedio);
-        reporte.put("analisisRepetidos", analisisRepetidos);
-        reporte.put("productividadTecnicos", productividadTecnicos);
-        reporte.put("periodoInicio", inicio);
-        reporte.put("periodoFin", fin);
-        
-        return reporte;
-    }
+    
+    List<Map<String, Object>> analisisRepetidos = new ArrayList<>();
+    analisisCount.entrySet().stream()
+        .sorted(Map.Entry.<String, Long>comparingByValue().reversed())
+        .limit(5)
+        .forEach(entry -> {
+            Map<String, Object> item = new HashMap<>();
+            item.put("nombre", entry.getKey());
+            item.put("cantidad", entry.getValue());
+            analisisRepetidos.add(item);
+        });
+    dashboard.put("analisisRepetidos", analisisRepetidos);
+    
+    // Tiempo promedio de atención (placeholder)
+    dashboard.put("tiempoPromedioAtencion", 45);
+    
+    // Fecha de generación
+    dashboard.put("fechaGeneracion", LocalDateTime.now());
+    
+    return dashboard;
 }
+
+/**
+ * Método auxiliar para crear items de estado
+ */
+private Map<String, Object> crearItemEstado(String estado, long cantidad) {
+    Map<String, Object> item = new HashMap<>();
+    item.put("estado", estado);
+    item.put("cantidad", cantidad);
+    return item;
+}
+}   

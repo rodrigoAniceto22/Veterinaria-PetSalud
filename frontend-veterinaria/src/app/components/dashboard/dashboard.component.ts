@@ -21,6 +21,8 @@ export class DashboardComponent implements OnInit {
   // Gráficas
   ordenesPorEstado: any[] = [];
   especiesAtendidas: any[] = [];
+  tiempoPromedioAtencion: number = 0;
+  analisisRepetidos: any[] = [];
 
   constructor(
     private reporteService: ReporteService,
@@ -49,12 +51,28 @@ export class DashboardComponent implements OnInit {
   }
 
   procesarDatos(data: any): void {
+    console.log('=== DATOS DEL DASHBOARD ===');
+    console.log('Data completa:', data);
+    
     this.totalOrdenes = data.totalOrdenes || 0;
     this.ordenesPendientes = data.ordenesPendientes || 0;
     this.resultadosValidados = data.resultadosValidados || 0;
     this.ingresosMes = data.ingresosMes || 0;
     this.ordenesPorEstado = data.ordenesPorEstado || [];
     this.especiesAtendidas = data.especiesAtendidas || [];
+    this.tiempoPromedioAtencion = data.tiempoPromedioAtencion || 0;
+    this.analisisRepetidos = data.analisisRepetidos || [];
+    
+    console.log('KPIs procesados:');
+    console.log('- Total Órdenes:', this.totalOrdenes);
+    console.log('- Pendientes:', this.ordenesPendientes);
+    console.log('- Validados:', this.resultadosValidados);
+    console.log('- Ingresos:', this.ingresosMes);
+    console.log('- Órdenes por estado:', this.ordenesPorEstado);
+    console.log('- Especies:', this.especiesAtendidas);
+    console.log('- Tiempo promedio:', this.tiempoPromedioAtencion);
+    console.log('- Análisis repetidos:', this.analisisRepetidos);
+    console.log('===========================');
   }
 
   refrescar(): void {
